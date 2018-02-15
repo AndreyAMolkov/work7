@@ -3,17 +3,22 @@
 
 struct REGION
 {
-	char id[3];// id country (2letter)
+	char id_country[20];// id country (2letter)
+	char id_region[20];
 	char name[256];
 	struct REGION* next;
 };
 typedef struct REGION TREGION;
 typedef TREGION * PREGION;
 
-int createListRegions(FILE*fp, PREGION listRegions);
-TREGION* makeListOfStructure(TREGION* headOfRegions, char *stringOfRegion);
-char* readStringFromFile(FILE*InputFile);
-
+TREGION *createListRegions(FILE*fp);
+TREGION* makeListOfStructure(TREGION* Region, char *stringOfRegion);
+char* readStringFromFile(FILE*InputFile, char*stringOfRegion);
+int checkDataRegion(char*stringOfRegion);
+TREGION*fillStruct(TREGION*Region, char*stringOfRegion);
+char*fillBox(char*from, char* to);
+int conditionRecordInline(char symbol);
+char*prepareForLetter(char*from);
 /*
 . To write a program that creates a linked list with records of
 regions and their codes according to the content of the data file

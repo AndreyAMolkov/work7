@@ -146,7 +146,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\3\task3.c" />
     <ClCompile Include="main4.c" />
+    <ClCompile Include="task4.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\3\task3.h" />
+    <ClInclude Include="task4.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

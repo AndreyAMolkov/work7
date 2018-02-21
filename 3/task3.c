@@ -1,6 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "task3.h"
-#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,7 +8,22 @@
 FILE *fpOut;
 #define successfully 1
 #define fall 0
+typedef unsigned char UC;
+void countTotalStructInTree(PSYM treeSym, int *totalStructInfile)
+{
 
+	if (treeSym->moreNode)   
+	{
+	
+		countTotalStructInTree(treeSym->moreNode, totalStructInfile);
+	}
+	if (treeSym->lessNode)   
+	{
+		
+		countTotalStructInTree(treeSym->lessNode, totalStructInfile);
+	}
+	*totalStructInfile += 1;
+}
 void countTotal2Tree(PSYM treeSym, ULL *totalCount, FILE*fpcheck)
 {
 
@@ -17,8 +31,8 @@ void countTotal2Tree(PSYM treeSym, ULL *totalCount, FILE*fpcheck)
 	if (treeSym->lessNode)    countTotal2Tree(treeSym->lessNode, totalCount, fpcheck);
 	
 	*totalCount+= treeSym->count;
-	fprintf(fpcheck, "%u\t%u\t%0.4f\t%s\t%p\t%p\n", treeSym->ch, treeSym->count,treeSym->freq,treeSym->code,treeSym->lessNode,treeSym->moreNode);
-	 }
+	fprintf(fpcheck, "%u\t%u\t%0.6f\t%s\t%p\t%p\n", treeSym->ch, treeSym->count,treeSym->freq,treeSym->code,treeSym->lessNode,treeSym->moreNode);
+ }
 
 int check2Tree(PSYM treeSym, ULL trueTotal )//need for check number of total letters  in tree and in the source file
 {
@@ -39,7 +53,7 @@ int check2Tree(PSYM treeSym, ULL trueTotal )//need for check number of total let
 		return fall;// it's bad becouse number of leters in Tree > or < number of letter in input's file 
 	
 }
-PSYM makeTree(PSYM treeSym, BASE_TYPE inputSymbol, BASE_TYPE symbolPrevioyslyNode)
+PSYM makeTree(PSYM treeSym, UC inputSymbol, UC Node)
 {
 	long int rezult = 0;
 
@@ -61,7 +75,7 @@ PSYM makeTree(PSYM treeSym, BASE_TYPE inputSymbol, BASE_TYPE symbolPrevioyslyNod
 		treeSym->count++;
 		return treeSym;
 	}
-	else if ((rezult=(inputSymbol - symbolPrevioyslyNode))>0)
+	else if ((rezult=(inputSymbol - Node))>0)
 		treeSym->moreNode = makeTree(treeSym->moreNode, inputSymbol, treeSym->ch);
 	else
 		treeSym->lessNode = makeTree(treeSym->lessNode, inputSymbol, treeSym->ch);
@@ -84,11 +98,15 @@ void copyTree2Parr(PSYM treeSym, PSYM*syms)
 	static int i = 0;
 	if (treeSym->moreNode)    copyTree2Parr(treeSym->moreNode,syms);
 	if (treeSym->lessNode)    copyTree2Parr(treeSym->lessNode,syms);
-	syms[i] = treeSym;
-	i++;syms++;
+	if(treeSym->count>0)
+	{
+		syms[i] = treeSym;
+		i++;//syms++;
+	}
 }
 int printArrayForCheck(PSYM*psyms)
 {
+	int count = 0;
 	FILE *fpcheck = fopen("checkArray.xls", "w");
 	if (!fpcheck)
 	{
@@ -97,9 +115,12 @@ int printArrayForCheck(PSYM*psyms)
 	}
 	fprintf(fpcheck, "%s\t%s\t%s\t%s\t%s\t%s\n", "Input ch", "total", "frequency", "CODE", "lessNode", "moreNode");
 
-	for(int i=0;i<MAXSYMB;i++)
-		fprintf(fpcheck, "%u\t%u\t%0.4f\t%s\t%p\t%p\n", psyms[i]->ch, psyms[i]->count, psyms[i]->freq, psyms[i]->code, psyms[i]->lessNode, psyms[i]->moreNode);
-	fclose(fpcheck);
+	for (int i = 0;psyms[i] != NULL;i++)
+	{
+		fprintf(fpcheck, "%u\t%u\t%f\t%s\t%p\t%p\n", psyms[i]->ch, psyms[i]->count, psyms[i]->freq, psyms[i]->code, psyms[i]->lessNode, psyms[i]->moreNode);
+		++count;
+	}
+	printf("Number of possition =%i\n", count);
 	return successfully;
 }
 int findErrorCopy2psyms(PSYM treeSym, PSYM*syms)// need for search a problem, which were find in check checksum the new array (its must have just copy from treesym)
@@ -134,7 +155,7 @@ int checkDataParray(PSYM *syms, ULL totalCount, PSYM treeSym)// check data in ne
 	ULL checkCount = 0;
 	int i;
 	
-	for (i = 0; i<MAXSYMB;i++)
+	for (i = 0;syms[i]!=0;i++)
 	{
 		checkCount +=syms[i]->count;//*(syms->count);
 	}
@@ -159,7 +180,7 @@ int sort(PSYM *psym,BASE_TYPE maxCount)//head will be maxCount and at bottom lin
 	for (ULL currentMaxCount = maxCount;currentMaxCount != 0;currentMaxCount--)//
 	{
 		
-		for (int numberFrom=numberTo;numberFrom < MAXSYMB;numberFrom++)
+		for (int numberFrom=numberTo;psym[numberFrom]!=NULL;numberFrom++)
 		{
 			if (psym[numberFrom]->count == currentMaxCount)
 			{
@@ -181,16 +202,15 @@ int sort(PSYM *psym,BASE_TYPE maxCount)//head will be maxCount and at bottom lin
 
 	return ok;
 }
-void makeFrequencyForArray(PSYM *psyms, ULL totalCount)
+void makeFrequencyForArray(PSYM *psyms, ULL totalCount,int maxlengthArray)
 {
 	int i;
 	float doubleCount;
 	float doubleTotalCount = totalCount;
 
-	for (i = 0;i < MAXSYMB;i++)// check summ for frequency
+	for (doubleCount = 0.0,i = 0;i < maxlengthArray;i++)// check summ for frequency
 	{
 		doubleCount = psyms[i]->count;
-		doubleTotalCount= totalCount;
 		psyms[i]->freq = doubleCount / doubleTotalCount;
 	}
 }
@@ -203,7 +223,7 @@ int checkSumForFrequencyArray(PSYM*psyms)
 	
 
 	checkSumForFrequency = 0.0;
-	for (i = 0;i < MAXSYMB;i++)// check summ for frequency
+	for (i = 0;psyms[i]!=NULL;i++)// check summ for frequency
 		checkSumForFrequency += psyms[i]->freq;
 	if (checkSumForFrequency > lowlimitAccuracy && checkSumForFrequency < hightlimitAccuracy)
 		return successfully;
@@ -212,9 +232,15 @@ int checkSumForFrequencyArray(PSYM*psyms)
 }
 void printArrayForScreen(PSYM*psyms)
 {
-	printf("%s    %s\n", "Input ch", "frequency");
 
-	for (int i = 0;i < MAXSYMB;i++)
-		printf("%u\t%0.4f\n", psyms[i]->ch, psyms[i]->freq);
+	int i;
+	int count = 0;
+	printf("%s    %s      %s\n", "Input ch", "frequency","code");
 
+	for ( i = 0;psyms[i]!=NULL;i++)
+	{
+		printf("%u\t%f\t%s\n", psyms[i]->ch, psyms[i]->freq,psyms[i]->code);
+		count = i;
+	}
+	printf("Number of possition =%i\n", count);
 }

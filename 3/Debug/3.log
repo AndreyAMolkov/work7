@@ -1,3 +1,8 @@
-﻿  main3.c
+﻿  task3.c
+c:\git\work7\3\task3.c(212): warning C4244: =: преобразование "BASE_TYPE" в "float", возможна потеря данных
+c:\git\work7\3\task3.c(208): warning C4244: инициализация: преобразование "ULL" в "float", возможна потеря данных
+  main3.c
+  Создание кода...
+c:\git\work7\3\task3.c(150): warning C4715: findErrorCopy2psyms: значение возвращается не при всех путях выполнения
   3.vcxproj -> C:\git\work7\Debug\3.exe
   3.vcxproj -> C:\git\work7\Debug\3.pdb (Full PDB)

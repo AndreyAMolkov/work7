@@ -10,15 +10,16 @@ extern FILE *fpOut;
 #define fall 0
 int main()
 {
-
-	//TSORTMAX *sort;
+	//int totalSymbolInfile;
 	BASE_TYPE maxCount;
 	FILE *fp;
 	PSYM *psyms;
 	//int number;
 	ULL numberLetter;
 	TSYM* treeSym;
-	BASE_TYPE ch = ' ';
+	int ch = ' ';
+	int totalStructInfile;
+	int maxlengthArray;
 	fp = fopen("fp.doc", "rb");// The input file
 	if (!fp)
 	{
@@ -28,6 +29,8 @@ int main()
 	for (treeSym = 0x0,numberLetter = 0;(ch = fgetc(fp)) != EOF;numberLetter++)// are creating a tree from an input file and the total quantity of letters
 		treeSym = makeTree(treeSym, ch, 128);//adress the first node
 	fclose(fp);
+	totalStructInfile = 0;//The quantity of structs in file
+	countTotalStructInTree(treeSym, &totalStructInfile);
 	if(treeSym ==0x0)
 {
 	puts("ERROR check to create a tree");
@@ -39,12 +42,14 @@ int main()
 		puts("ERROR; check to create a tree");
 		return  1;
 	}
-	//rewind(fp);
+
 	psyms = 0x0;
 	while(!psyms) 
-		psyms = (PSYM*)calloc(MAXSYMB, sizeof(PSYM));
+		psyms = (PSYM*)calloc(totalStructInfile+2, sizeof(PSYM));// add 2 cell for 
 	copyTree2Parr(treeSym, psyms);////create array of pointers for structures
-	psyms[MAXSYMB] = NULL;
+	maxlengthArray = 0;
+	maxlengthArray = totalStructInfile;
+	psyms[maxlengthArray] = NULL;
  if (!checkDataParray(psyms,numberLetter,treeSym))
  {
 	 puts("Error copy Tree to syms");
@@ -65,7 +70,7 @@ int main()
 	 return 1;
  }
 
-  makeFrequencyForArray(psyms, numberLetter);//filling in the array of frequency of occurence
+  makeFrequencyForArray(psyms, numberLetter,maxlengthArray);//filling in the array of frequency of occurence
 
  if(!checkSumForFrequencyArray(psyms))
  {

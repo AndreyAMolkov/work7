@@ -1,7 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
+#include "task1.h"
 #include<stdio.h>
 #include<stdlib.h>
-#include "task1.h"
 #include<ctype.h>
 #include<string.h>
 #define CHECK_OK 0
@@ -32,11 +32,11 @@ PREGION createListRegions(FILE*fp)//creates a linked list with records ofregions
 				continue;// The string containing the data of region includes ' " ', if not then go to the next iteration
 			}
 			
-				region= makeListOfStructure(region, stringOfRegion);// create list of regions
+			region= makeListOfStructure(region, stringOfRegion);// create list of regions
 				if (HeadOfRegions == 0) HeadOfRegions = region;
 			if(region== POINTER_FALL)// check : if returned the empty pointer
 			{
-				puts("ERROR of makeListOfStructure: the transferred pointer to region was EMPTY");
+				puts("ERROR of makeListOfStructure: the transferred pointer to region was EMPTY\n");
 				return POINTER_FALL;
 			}
 
@@ -48,9 +48,6 @@ return HeadOfRegions;
 }
 char* readStringFromFile(FILE*InputFile,char*buf)// the function record a string from a file to the buf 
 {
-	
-	
-
 	return fgets(buf, MAX_LENGHT_STRING, InputFile);//buf;
 }
 int checkDataRegion(char*stringOfRegion)
@@ -62,7 +59,7 @@ int checkDataRegion(char*stringOfRegion)
 	presult=strchr(stringOfRegion, ch);
 	if (((stringOfRegion+lenString)-presult)>lenString)//check out: the resulting value contained in the input string?
 	{
-		printf("in line ' %s '  didn't find signs ' %c ' belonging to the region.",stringOfRegion,ch);
+		printf("in line ' %s '  didn't find signs ' %c ' belonging to the region.\n",stringOfRegion,ch);
 			return CHECK_FALL;
 	}
 
@@ -75,13 +72,15 @@ TREGION* makeListOfStructure(TREGION* region, char *stringOfRegion)
 	if (region == NULL)
 	{
 		if ((region = fillStruct(region, stringOfRegion)) == 0x0)// record data in a structure fall
-			printf("Attention: makeListOfStructure: the gapin data records in Country - %s code of region - %s  name of region - %s", region->id_country, region->id_region, region->name);
-	return region;
+			printf("Attention: makeListOfStructure: the gap in data records in Country - %s code of region - %s  name of region - %s\n", region->id_country, region->id_region, region->name);
 	}
 	else
+	{
 		while (region->next != NULL)
 			region = region->next;
-			region->next=makeListOfStructure(region->next,stringOfRegion);
+		region->next = makeListOfStructure(region->next, stringOfRegion);
+	}
+	return region;
 }
 
 TREGION*fillStruct(TREGION *Region, char*stringOfRegion)
@@ -97,7 +96,7 @@ TREGION*fillStruct(TREGION *Region, char*stringOfRegion)
 		}
 		if (i++ > MAX_LENGHT_STRING)
 		{
-			printf("ERROR fillStuct: not data in stringOfRegion");
+			printf("ERROR fillStuct: not data in stringOfRegion/n");
 			return POINTER_FALL;// error Fall
 		}
 	}
@@ -166,6 +165,160 @@ char*prepareForLetter(char*from)
 		
 	}
 	return POINTER_FALL; // return Error
+}
+
+
+int checkCreateStructurs(TREGION*headStructere, FILE *fp)//verify that the structure list is created correctly
+{
+	unsigned int totalCountStruct=0;
+	unsigned int totalCountFile = 0;
+	long int result = 0;
+	totalCountStruct =countTotalUnitInTree(headStructere);
+	if (totalCountStruct == CHECK_FALL)//total structs  equally zero
+	{
+		printf("ERROR checkCreateStructurs: total structs  equally zero\n");
+		return CHECK_FALL;
+	}
+	
+	totalCountFile = countTotalRowInFile(fp);
+	if (totalCountFile == CHECK_FALL)// total rows in file equally zero
+	{
+		printf("ERROR checkCreateStructurs: total rows in file equally zero\n");
+		return CHECK_FALL;
+	}
+	result = totalCountFile - totalCountStruct;
+	if (result==0)
+		return CHECK_OK;
+	else if(result>0)
+		printf("ATTENTION:The number of lines in the file is greater than the number of structures by %li\n",result);
+	else 
+		printf("ATTENTION: The number of structures is greater than the number of lines in the file  by %li\n",result );
+	return CHECK_FALL;
+}
+unsigned int countTotalUnitInTree(TREGION*headStructere)
+{
+	unsigned count = 0;
+	while(headStructere->next!=NULL)// note:the first item is not calculation
+	{
+		headStructere = headStructere->next;
+		count++;
+	}
+	if (count == CHECK_FALL)
+		return CHECK_FALL;
+
+	count++;//this need for compensation of first element
+		return count;
+}
+unsigned int countTotalRowInFile(FILE*fp)
+{
+	unsigned int count = 0;
+	char buf[MAX_LENGHT_STRING];
+	rewind(fp);
+	while (fgets(buf, MAX_LENGHT_STRING, fp) != NULL)
+	{
+		if (strlen(buf) == (MAX_LENGHT_STRING-1))
+			printf("ATTENTION:possible loss of data in row. The string -' %s '- is longer than the allowed lenght. max= %u  \n", buf, MAX_LENGHT_STRING);
+		count++;
+	}
+	return count;
+}
+void findErrorTreeFromFile(TREGION*headStructere, FILE*fpcheck)// need for search a problem, and print it
+{
+	puts("\n\n\n");//to indent 
+	unsigned int count;
+	char buf[MAX_LENGHT_STRING];
+	rewind(fpcheck);
+	for (count=0;(fgets(buf, MAX_LENGHT_STRING, fpcheck)) != NULL;count++) // take 1 line of text in buffer
+	{
+		if (strlen(buf) == (MAX_LENGHT_STRING-1))
+		{
+			printf("ATTENTION:The line was not compared because it is larger than the allowed size =%i.The number line in text =%u Line of text =%s\n",MAX_LENGHT_STRING, count, buf);
+			continue;
+		}
+		if (findLDataStructureInString(buf, headStructere) == CHECK_FALL)//if all elements of one structure  were find then go to next loop, else print its line of text on the console
+				printf("ATTENTION:The line of text not found in list of structure .The number line in text =%u Line of text =%s\n", count, buf);
+
+	
+	}
+}
+int findLDataStructureInString(char*buf, TREGION*headStructere)
+{
+	unsigned count;
+	for (count=0;headStructere->next != NULL;headStructere = headStructere->next)// previosly this need will be make for last element,
+	{
+		if (compareString(buf,headStructere->id_country, MAX_LENGHT_STRING) == CHECK_OK)// in tis function if string 2 was find in string 1 will be return CHECK_OK
+		{
+			if (compareString(buf, headStructere->id_region,  MAX_LENGHT_STRING) == CHECK_OK)
+				if (compareString(buf, headStructere->name,  MAX_LENGHT_STRING) == CHECK_OK)
+					return CHECK_OK;
+		}
+
+			count++;
+	}
+	//  make for last element,
+	
+		if (compareString(buf, headStructere->id_country, MAX_LENGHT_STRING) == CHECK_OK)// in tis function if string 2 was find in string 1 will be return CHECK_OK
+		{
+			if (compareString(buf, headStructere->id_region, MAX_LENGHT_STRING) == CHECK_OK)
+				if (compareString(buf, headStructere->name, MAX_LENGHT_STRING) == CHECK_OK)
+					return CHECK_OK;
+		}
+
+	return CHECK_FALL;// this means that the condition is not met
+}
+
+int compareString(char* sourseString, char* xString, int maxLenght)
+{
+	int iSourse, iXstring;
+	for (iXstring = 0, iSourse = 0;iSourse < maxLenght;iSourse++ )
+	{
+		if (sourseString[iSourse]==*xString)
+			for (iXstring = 0;iXstring < MAX_LENGHT_STRING;iXstring++,iSourse++)
+			{
+				if (xString[iXstring] == '\0')// condition for succsessfuly
+					return CHECK_OK;
+				if (xString[iXstring] != sourseString[iSourse])// condition for fall
+					break;// search next in this string
+			}
+
+		
+	}
+
+	return CHECK_FALL;
+}
+void createListCountry(PREGION*listCountry,PREGION listRegions )//create pointer to array of pointers
+{
+	*listCountry = listRegions;
+	fillListCountry(listCountry, listRegions);
+}
+
+int fillListCountry(PREGION*listCountry, PREGION listRegions)
+{
+ int i = 0;
+	while (1)
+	{
+		if (strncmp(listCountry[i]->id_country, listRegions->id_country, MAX_LENGHT_STRING) == 0)
+		{
+			listCountry[++i] = listRegions;
+		}
+		if (listRegions->next == NULL)
+			return CHECK_OK;
+		listRegions = listRegions->next;
+	}
+}
+int countTotalCountry(PREGION listRegions, unsigned int *totalCountry)
+{
+	char *name= listRegions->id_country;
+
+	if (listRegions->next == NULL)
+		return CHECK_OK;
+	else
+		countTotalCountry(listRegions->next,totalCountry);
+	if (strncmp(listRegions->id_country, name, MAX_LENGHT_STRING) != 0)
+	{
+		name = listRegions->id_country;
+		 totalCountry= *totalCountry+1;
+	}
 }
 //a)generate a list based on file data.
 //(b)Search and display all the data in the letter designation of the country.

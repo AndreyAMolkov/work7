@@ -11,8 +11,9 @@ int main()
 {
 	int result = CHECK_FALL;// unutialisation of negative
 	PREGION listRegions=0x0;
-	char*listCountry;
+	PREGION*listCountry;
 	FILE* fp;
+	unsigned int totalCountry;
 	fp= fopen("fips10_4.csv ", "rt");
 	if (!fp)// check open file
 	{
@@ -27,8 +28,18 @@ int main()
 		puts("Error main: Created list of regions");
 		return ERROR;
 	}
+	
+	result = CHECK_FALL;
+	if (checkCreateStructurs(listRegions, fp) == CHECK_FALL)// verify that the structure list is created correctly by comparring its length with the number of rows and displaing the result on the console
+		;//	findErrorTreeFromFile(listRegions, fp);// need for search a problem, and print it (What is lost)
+	else
+		;// didn't use here
+	
 	listCountry = 0x0;
-	listCountry = createListCountry(listRegions);
+	totalCountry = 0;
+	countTotalCountry(listRegions,&totalCountry);
+	listCountry = (PREGION*)calloc(totalCountry+3, sizeof(PREGION));
+	createListCountry(listCountry,listRegions);
 
 	return 0;
 }

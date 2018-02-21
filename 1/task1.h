@@ -1,4 +1,7 @@
-﻿#include<stdio.h>
+﻿#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 
 struct REGION
@@ -19,6 +22,15 @@ TREGION*fillStruct(TREGION*Region, char*stringOfRegion);
 char*fillBox(char*from, char* to);
 int conditionRecordInline(char symbol);
 char*prepareForLetter(char*from);
+int checkCreateStructurs(TREGION*headStructere, FILE *fp);//verify that the structure list is created correctly
+unsigned int countTotalUnitInTree(TREGION*headStructere);
+unsigned int countTotalRowInFile(FILE*fp);
+void findErrorTreeFromFile(TREGION*headStructere, FILE*fpcheck);// need for search a problem, and print it
+int findLDataStructureInString(char*buf, TREGION*headStructere);//if all elements of one structure  were find then go to next loop, else print its line of text on the console
+int compareString(char* sourseString, char* xString,int maxLenght);
+void createListCountry(PREGION*listCountry,PREGION listRegions);//create pointer to array of pointers
+int  fillListCountry(PREGION*listCountry, PREGION listRegions);
+int countTotalCountry(PREGION listRegions,unsigned int *totalCountry);
 /*
 . To write a program that creates a linked list with records of
 regions and their codes according to the content of the data file

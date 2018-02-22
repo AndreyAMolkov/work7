@@ -50,9 +50,10 @@ long int  createFile101(FILE*fp_in, PSYM* syms, FILE*fp101);
 void copyParrToChange(PSYM*psyms, PSYM*psymsCode);// copy pointer to arr of poiters for build tree
 unsigned char pack(unsigned char buf[]);
 long int  createPak(FILE*in, FILE*out, int *number0LastBit);
-char*readFileCh(FILE*fp,char*str);
+
 int checkMadeCodesUsually(PSYM*psyms);
 int creatHederInfinalFile(FILE*fpMOL, int maxlengthArray, PSYM* psyms, int number0LastBit, ULL numberLetter);
 int recordPSYMtoString(int maxlengthArray, PSYM* psyms, FILE*fpMOL);
 UC*createStringChar(int maxlengthArray, PSYM* psyms);
 float*createStringFloat(int maxlengthArray, PSYM* psyms);
+char *int2str(char *buf, int value);

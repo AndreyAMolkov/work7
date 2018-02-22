@@ -14,6 +14,8 @@
 #define WRONGNEGATIVEVALUE -100
 #define CHECK_FALL 0
 #define CHECK_OK 1
+#define WRITE "wb"
+#define READ "rb"
 int main()
 {
 	int number0LastBit;//number added zerros in the last bit
@@ -36,7 +38,7 @@ int main()
 	char checkchar;
 	int totalStructInfile;
 	int positionEndHeader;
-	fp = fopen("fp2.doc", "rb");// The input file
+	fp = fopen("1.txt", READ);// The input file
 	if (!fp)
 	{
 		puts("error opening file fp");
@@ -87,7 +89,7 @@ int main()
 		puts("Error: fall of print of the file for check");
 		return 1;
 	}
-	printArrayForScreen(psyms);
+	
 	maxCount = 0;
 	Tree2max(treeSym, &maxCount);// search the maximum value for a single symbol
 
@@ -101,7 +103,7 @@ int main()
 		puts("Error: data of psyms different from data the treeSym");
 		return 1;
 	}
-
+printArrayForScreen(psyms);
 
 
 	psymsCode = 0x0;
@@ -125,7 +127,7 @@ int main()
 	printArrayForScreen(psyms);
 	
 
-	fp101 = fopen("file with 101.txt", "wt");
+	fp101 = fopen("file with 101.txt", WRITE);
 	long int pos = ftell(fp101);
 	lengthFp101 = EMPTY;
 	pos = ftell(fp);
@@ -137,10 +139,15 @@ int main()
 		return 1;
 	}
 	fclose(fp101);// close for open for reading
-	fp101 = fopen("file with 101.txt", "rb");
+	fp101 = fopen("file with 101.txt", READ);
 	//pos = ftell(fp101);
 	//pos = ftell(fp);
-	fpMOL = fopen("result.txt", "wt");
+	fpMOL = fopen("result.txt", WRITE);
+	if (fpMOL == NULL)
+	{
+		puts("ERROR opened thefinal file");
+		return 1;
+	}
 	rewind(fp101);
 	pos = ftell(fp101);
 	number0LastBit = WRONGNEGATIVEVALUE;//initialisatioon wrong value 
@@ -154,7 +161,7 @@ int main()
 	positionEndHeader = result;
 
 	lengthFpMOL = 0;
-	lengthFpMOL = createPak(fp101, fpMOL, &number0LastBit);// final
+	lengthFpMOL = createPak(fpMOL,fp101,  &number0LastBit);// final
 	if (lengthFpMOL == EMPTY)
 	{
 		printf("Error create final file. EXIT");

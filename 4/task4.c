@@ -19,8 +19,6 @@ void copyParrToChange(PSYM*psyms, PSYM*psymsCode)
 		//count = i;
 	}
 	psymsCode[i] = NULL;
-	//return count;
-
 }
 struct SYM* buildTree(TSYM *psym[], int N)
 {
@@ -65,22 +63,19 @@ void desiredPositionPSYM(PSYM*psym, int N, TSYM *temp)
 
 void makeCodes(TSYM *root)
 {
-	if (root->moreNode)
+	if (root->moreNode!=NULL)
 	{
 		strcpy(root->moreNode->code, root->code);
 		strcat(root->moreNode->code, "0");
-		
 		makeCodes(root->moreNode);
 	}
-	if (root->lessNode)
+	if (root->lessNode!=NULL)
 	{
 		strcpy(root->lessNode->code, root->code);
 		strcat(root->lessNode->code, "1");
-		
 		makeCodes(root->lessNode);
 	}
-	if ((*root->code) == '\0')
-		;
+	
 
 }
 
@@ -135,15 +130,17 @@ long int createFile101(FILE*fp_in,PSYM* psyms, FILE*fp101)
 }
 long int createPak(FILE*in,FILE*out,int *number0LastBit)
 {
-	int pos3 = ftell(out);
-	char *bufChar=(char*)calloc(SIZEPAK, sizeof(char));
+	
+	char *bufChar=(char*)calloc(SIZEPAK+2, sizeof(char));
 	unsigned char charTemp= GARBAGE;
 	unsigned int count = 0;
 	int len=0;
 	long int pos = ftell(in);
 	//fseek(in, 0, SEEK_); ;// need for return to first symbol 
 	do{
-		bufChar = readFileCh(in, bufChar);
+int posBegine = ftell(out);
+		fread(bufChar, sizeof(char), SIZEPAK, out);
+		//bufChar = readFileCh(in, bufChar);
 		if (bufChar == ERRORPointer)
 		{
 			printf("ERROR createPak: return to calling function incorrect EMPTY, stop at created %u letter ",count);
@@ -151,11 +148,10 @@ long int createPak(FILE*in,FILE*out,int *number0LastBit)
 		}
 		len = strlen(bufChar);
 		
-		if (len < SIZEPAK)
-			len = len;
-			charTemp = pack(bufChar);
-		fwrite(&charTemp, sizeof(char), 1, out);
-		
+		charTemp = pack(bufChar);
+		 int pos3 = ftell(out);
+		fwrite(&charTemp, sizeof(unsigned char), 1, in);
+		int posRecord = ftell(in);
 		memset(bufChar, EMPTY, sizeof(char));// fill wrong value
 		*bufChar='\0',//for safety we put a pointer to '\0'
 		charTemp = GARBAGE;
@@ -169,40 +165,7 @@ long int createPak(FILE*in,FILE*out,int *number0LastBit)
 	// free(bufChar);
 	 return count;
 }
-char*readFileCh(FILE*fp,char *str)// note: here must read only symbol '0' or'1'
-{
-	int i;
-	int count;
-	
-	for (i = 0,count=0;i <SIZEPAK;i++)
-	{
-		if ((str[i] = fgetc(fp)) == EOF)
-		{
-			
-			if (feof(fp) != 0)
-			{
-				printf("\nReading of file for codding successfuly finished\n");
-				break;
-			}
-			else
-			{
-				printf("\nERROR reading of file\n");
-				return ERRORPointer;// error and return the wrong vavue
-			}
-			if (0 > str[i] || str[i] > 1)
-			{
-				long int positionWrong = ftell(fp);
-				printf("ERROR readFileCh: in file where must be only '1' or '0' found the symbol whit number =%i, its letter=%c, ftell=%li", str[i], (char)str[i], positionWrong);
-				return ERRORPointer;
-			}
 
-		}
-		count = i;
-	}
-	str[i] = '\0';
-return str;
-
-}
 int checkMadeCodesUsually(PSYM*psyms)
 {
 	char ch = '\0';
@@ -220,8 +183,7 @@ int checkMadeCodesUsually(PSYM*psyms)
 unsigned char pack(unsigned char buf[])
 {
 	union CODE code;
-	if (strlen(buf) != SIZEPAK)//nedd for check last symbol
-		1 == 1;
+
 	code.byte.b1 = buf[0] - '0';
 	code.byte.b2 = buf[1] - '0';
 	code.byte.b3 = buf[2] - '0';
@@ -244,21 +206,23 @@ int creatHederInfinalFile(FILE*fpMOL,int maxlengthArray,PSYM* psyms,int number0L
 	//The original file extentision. If the compressor changes expansion the original fille must then be restored.
 	
 	fwrite(signature, sizeof(char), 3, fpMOL);
-	fwrite(&maxlengthArray, sizeof(int), 3, fpMOL);
+	fwrite(&maxlengthArray, sizeof(int), 1, fpMOL);
 	if( CHECK_FALL==recordPSYMtoString(maxlengthArray, psyms,fpMOL))
 	{
 		printf("ERROR recordPSYMtoString: exit from creatHederInfinalFile\n");
 		return CHECK_FALL;
 	}
-	fwrite(&number0LastBit, sizeof(int), 3, fpMOL);
-	fwrite(&numberLetter, sizeof(ULL), 3, fpMOL);
+	int pos = ftell(fpMOL);
+	fwrite(&number0LastBit, sizeof(int), 1, fpMOL);
+	pos1 = ftell(fpMOL);
+	fwrite(&numberLetter, sizeof(ULL), 1, fpMOL);
 	posEndHeader = ftell(fpMOL);//
 	//fwrite(maxlengthArray, sizeof(int), 3, fpMOL);
 	return posEndHeader;
 }
 int recordPSYMtoString(int maxlengthArray, PSYM* psyms,FILE*fpMOL)
 { 
-	int i;
+	//int i;
 	UC* stringChar=0x0;
 	float*StringFloat=0x0;
 	stringChar=createStringChar(maxlengthArray, psyms);
@@ -290,11 +254,27 @@ float*createStringFloat(int maxlengthArray, PSYM* psyms)
 	float* stringFloat = 0x0;
 	char* stringChar = 0x0;
 	while (!stringFloat)
-		stringFloat = (UC*)calloc(maxlengthArray + 2, sizeof(float));
+		stringFloat = (float*)calloc(maxlengthArray + 2, sizeof(float));
 	for (i = 0;i < maxlengthArray;i++)
 	{
 		stringFloat[i] = psyms[i]->freq;
 	}
 	stringFloat[i] = '\0';
 	return stringFloat;
+}
+char *int2str(char *buf,int value)
+{
+	static	int i = -1;// need for from next step i=0
+	i++;
+	if ((value) == 0)
+	{
+		buf[i] = 0;
+		i = 0;
+		return buf;
+	}
+	else
+		int2str(buf, (value / 10));
+	buf[i++] = value % 10 + '0';
+	return buf;
+
 }

@@ -1,8 +1,4 @@
 ﻿  task4.c
-c:\git\work7\4\task4.c(89): warning C4305: инициализация: усечение из "int" к "char"
-c:\git\work7\4\task4.c(261): warning C4101: i: неиспользованная локальная переменная
-c:\git\work7\4\task4.c(293): warning C4133: =: несовместимые типы - из "UC *" в "float *"
-  main4.c
-  Создание кода...
+c:\git\work7\4\task4.c(84): warning C4305: инициализация: усечение из "int" к "char"
   4.vcxproj -> C:\git\work7\Debug\4.exe
   4.vcxproj -> C:\git\work7\Debug\4.pdb (Full PDB)

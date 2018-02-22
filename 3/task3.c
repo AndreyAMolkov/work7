@@ -9,6 +9,8 @@ FILE *fpOut;
 #define successfully 1
 #define fall 0
 typedef unsigned char UC;
+#define WRITE "wb"
+#define READ "rb"
 void countTotalStructInTree(PSYM treeSym, int *totalStructInfile)
 {
 
@@ -36,7 +38,7 @@ void countTotal2Tree(PSYM treeSym, ULL *totalCount, FILE*fpcheck)
 
 int check2Tree(PSYM treeSym, ULL trueTotal )//need for check number of total letters  in tree and in the source file
 {
-	FILE *fpcheck = fopen("checkTree.xls","w");
+	FILE *fpcheck = fopen("checkTree.xls",WRITE);
 	if (!fpcheck)
 	{
 		printf("ERROR of opened fpcheck");
@@ -107,7 +109,7 @@ void copyTree2Parr(PSYM treeSym, PSYM*syms)
 int printArrayForCheck(PSYM*psyms)
 {
 	int count = 0;
-	FILE *fpcheck = fopen("checkArray.xls", "w");
+	FILE *fpcheck = fopen("checkArray.xls", WRITE);
 	if (!fpcheck)
 	{
 		printf("ERROR of opened fpcheck");

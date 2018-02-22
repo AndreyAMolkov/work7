@@ -28,3 +28,17 @@ union CODE {
 	} byte;
 };
 typedef union CODE TCODE;
+
+PSYM*readHederInfinalFile(FILE*fpMOL, int *maxlengthArray, TSYM* psyms[], int *number0LastBit, ULL *numberLetter);
+PSYM*recordStringtoPSYM(int maxlengthArray, TSYM* psyms[], FILE*fpMOL);
+PSYM*recordPsymsChar(int maxlengthArray, TSYM* psyms[], UC*stringChar);
+PSYM*recordPsymsFloat(int maxlengthArray, TSYM* psyms[], float*stringFloat);
+struct SYM* buildTree(TSYM *psym[], int N);
+void desiredPositionPSYM(PSYM*psym, int N, TSYM*temp);
+void makeCodes(TSYM *root);
+long int readPak(FILE*in, FILE*out, int number0LastBit);
+int unpack(UC buf,FILE*fp);
+int createFp(FILE*fp101, TSYM*root, FILE*fp);
+void printArrayForScreen(PSYM*psyms);
+int printArrayForCheck(PSYM*psyms);
+void copyParrToChange(PSYM*psyms, PSYM*psymsCode);

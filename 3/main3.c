@@ -8,6 +8,8 @@
 extern FILE *fpOut;
 #define successfully 1
 #define fall 0
+#define WRITE "wb"
+#define READ "rb"
 int main()
 {
 	//int totalSymbolInfile;
@@ -20,7 +22,7 @@ int main()
 	int ch = ' ';
 	int totalStructInfile;
 	int maxlengthArray;
-	fp = fopen("fp.doc", "rb");// The input file
+	fp = fopen("fp.doc", READ);// The input file
 	if (!fp)
 	{
 		puts("error opening file fp");

@@ -3,40 +3,44 @@
 #include <stdlib.h>
 #include <string.h>
 #include "task2.h"
-extern FILE *fpOut;
-
-//int main(int argc, UC *argv)
 int main()
 {
-	UC *p = 0x0;
 	FILE *fp, *fpsearch;
-	extern FILE *fpOut;
 	UC buf[256];
-	PNODE root = NULL;
-	//fp = fopen(argv[1], "rt");
+	TSYM *root = NULL;
 	 fp = fopen("begine.txt", "rt");
-	fpOut=fopen("result.txt", "w");
 	fpsearch = fopen("The C.txt", "rt");
-	if (!fp || !fpOut) {
+	root = (TSYM*)calloc(1, sizeof(TSYM));
+	unsigned int i;
+	if (!(fp || fpsearch))
+	{
 		perror("File: ");
 		return 1;
 	}
-	while (fscanf(fp, "%s", buf) == 1)
+
+	for (i = 0; (fscanf(fp, "%s", buf) == 1);i++)
 	{
-		chomp(buf);
-		if (!buf)
-			p=buf;
-		root = makeTree(root, buf, 'Z');
+		if (i == 0)
+		{
+			char *word = chomp(buf);
+			strcpy(root->ch, word);
+			root->count = 0;
+			root->moreNode = NULL;
+			root->lessNode = NULL;
+
+		}
+		else
+			makeTree(root, buf, 50);
+
 	}
+
 	while (fscanf(fpsearch, "%s", buf) == 1)
 	{
-		chomp(buf);
-		root = searchTree(root, buf, 'Z');
+		searchTree(root, buf, 50);
 	}
 	printTree(root);
 	fclose(fp);
-	fclose(fpOut);
-
+	fclose(fpsearch);
 	return 0;
 }
 
@@ -51,7 +55,7 @@ int main()
 Открывается файл с ключевыми словами и строится бинарное дерево с упорядоченными данными для всех слов.
 Открывается анализируемый файл с текстом программы и читается по словами (или символам);
 Полученные строки (слова) ищутся в бинарном дереве;
-Еслисловосовпадаетсхранящимсявдереве,увеличиваемсчётчиквстре- чаемости данного слова;
+Если слово совпадает с хранящимся в дереве,увеличиваем счётчик встречаемости данного слова;
 Состав
 
 Программа должна включать в себя следующие функции:

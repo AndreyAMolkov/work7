@@ -1,14 +1,25 @@
+#include<stdio.h>
+#include<stdlib.h>
+typedef unsigned long long int ULL;
+typedef unsigned long int BASE_TYPE;
 typedef unsigned char UC;
-struct NODE
+#define CHECK_OK 0
+#define CHECK_FALL 1
+#define GARBAGE '\0'  //selection is made for string
+#define MAX_LENGHT_STRING 255
+#define POINTER_FALL  0
+
+struct SYM//representation of the character
 {
-	UC word[256];
-	unsigned long count;
-	struct NODE *left;
-	struct NODE *right;
+	UC ch[MAX_LENGHT_STRING];// ASCII-code
+	unsigned int count;
+	struct SYM *moreNode;// the left node in the tree
+	struct SYM *lessNode;// the right node in the tree
 };
-typedef struct NODE TNODE;
-typedef TNODE* PNODE;
-PNODE makeTree(PNODE root, UC *word, UC condition);
-PNODE searchTree(PNODE root, UC *word, UC condition);
-void printTree(PNODE root);
-void chomp(UC*p);
+typedef struct SYM TSYM;
+typedef TSYM* PSYM;
+TSYM *makeTree(TSYM *treeSym, UC *word, UC Node);
+int searchTree(TSYM *treeSym, UC *word, UC node);
+void printTree(TSYM *root);
+char*chomp(char from[]);
+int conditionRecordInline(char charSymbol);

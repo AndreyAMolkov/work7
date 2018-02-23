@@ -1,6 +1,4 @@
 ﻿  task2.c
-c:\git\work7\2\task2.c(13): warning C4047: =: "UC" отличается по уровням косвенного обращения от "void *"
+c:\git\work7\2\task2.c(26): error C2065: countSearch: необъявленный идентификатор
   main2.c
   Создание кода...
-  2.vcxproj -> C:\git\work7\Debug\2.exe
-  2.vcxproj -> C:\git\work7\Debug\2.pdb (Full PDB)

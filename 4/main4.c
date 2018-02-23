@@ -49,7 +49,6 @@ int main()
 		treeSym = makeTree(treeSym, ch, 128);//adress the first node
 
 	}
-	//fclose(fp);
 	totalStructInfile = 0;//The quantity of structs in file
 	countTotalStructInTree(treeSym, &totalStructInfile);
 	if (treeSym == 0x0)
@@ -57,7 +56,6 @@ int main()
 		puts("ERROR check to create a tree");
 		return 1;// error create tree
 	}
-
 	if (!check2Tree(treeSym, numberLetter))// check true of created tree
 	{
 		puts("ERROR; check to create a tree");
@@ -88,10 +86,8 @@ int main()
 		puts("Error: fall of print of the file for check");
 		return 1;
 	}
-	
 	maxCount = 0;
 	Tree2max(treeSym, &maxCount);// search the maximum value for a single symbol
-
 	if (!sort(psyms, maxCount))
 	{
 		puts("Error: data of psyms different from data the treeSym");
@@ -103,8 +99,6 @@ int main()
 		return 1;
 	}
 printArrayForScreen(psyms);
-
-
 	psymsCode = 0x0;
 	while (!psymsCode)
 		psymsCode = (PSYM*)calloc(maxlengthArray + 2, sizeof(PSYM));
@@ -113,20 +107,15 @@ printArrayForScreen(psyms);
 	brushAdresses(psymsCode);//preparation for the Assembly of the tree, do cleaning old addresses
 	root = 0x0;
 	root = buildTree(psymsCode, maxlengthArray);//
-
 	makeCodes(root);
 	countGap = 0;
-
 	countGap = checkMadeCodesUsually(psyms);
 	if (countGap > 0)
 	{
 		printf("Error makeCodes: structs have field not contained code of '0' or '1'  =%i ", countGap);
 		return 1;
 	}
-
 	printArrayForScreen(psyms);
-	
-
 	fp101 = fopen("file with 101.txt", WRITE);
 	long int pos = ftell(fp101);
 	lengthFp101 = EMPTY;
@@ -140,8 +129,6 @@ printArrayForScreen(psyms);
 	}
 	fclose(fp101);// close for open for reading
 	fp101 = fopen("file with 101.txt", READ);
-	//pos = ftell(fp101);
-	//pos = ftell(fp);
 	fpMOL = fopen("result.txt", WRITE);
 	if (fpMOL == NULL)
 	{
@@ -179,7 +166,9 @@ if (result != 0)
 	return 1;
 }
 else
+{
 	printf("To coding was OK, different=%li\n", result);
+}
 	
  fclose(fp);
 fclose(fp101);

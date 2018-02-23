@@ -2,6 +2,7 @@
 #include<stdio.h>
 #include "task1.h"
 #include<ctype.h>
+#define MAXLETTER 128
 #define CHECK_OK 0
 #define CHECK_FALL 1
 #define ERROR 0
@@ -13,7 +14,10 @@ int main()
 	PREGION listRegions=0x0;
 	PREGION*listCountry;
 	FILE* fp;
-	unsigned int totalCountry;
+	unsigned int totalRegions;
+	unsigned int totalCounties;
+	char answer[MAXLETTER];
+	//a)generate a list based on file data.
 	fp= fopen("fips10_4.csv ", "rt");
 	if (!fp)// check open file
 	{
@@ -35,12 +39,41 @@ int main()
 	else
 		;// didn't use here
 	
+	
+	totalRegions = 0;
+	totalRegions=countTotalRegions(listRegions);
 	listCountry = 0x0;
-	totalCountry = 0;
-	countTotalCountry(listRegions,&totalCountry);
-	listCountry = (PREGION*)calloc(totalCountry+3, sizeof(PREGION));
-	createListCountry(listCountry,listRegions);
+	while(listCountry==NULL)
+		listCountry = (PREGION*)calloc(totalRegions+3, sizeof(PREGION));
+	prepareForListCountry(listCountry,listRegions);
+	totalCounties = 0;
+	totalCounties =createListCountry(listCountry,totalRegions);
+	//(b)Search and display all the data in the letter designation of the country.
+	printf("Do You would search (Yes or No)\n");
+	scanf("%s", answer);
+	if (tolower(*answer) == 'n')
+	{
+		puts("You answer was: No\n Exit from the program");
+		return 0;
+	}
+	printf("Do You would search regions of Country or Country ( input : Country or regions)\n");
+	scanf("%s", answer);
+	if (tolower(*answer) == 'r')
+	{
+		printf("Input the name of Region ( for example, Novgorod)\n");
+		scanf("%s", answer);
+		
+		if(searchRegionsOfCountry(listRegions, answer)==CHECK_FALL)
+					puts("The region not found\n");
+	}
+	if (tolower(*answer) == 'c')
+	{
+		printf("Input the name of Country ( for example, Zimbabve)\n");
+		scanf("%s", answer);
 
+		if (searchListOfCountry(listCountry, answer,listRegions) == CHECK_FALL)
+			puts(" Country not found\n");
+	}
 	return 0;
 }
 //. To write a program that 

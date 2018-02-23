@@ -270,10 +270,13 @@ int findLDataStructureInString(char*buf, TREGION*headStructere)
 int compareString(char* sourseString, char* xString, int maxLenght)
 {
 	int iSourse, iXstring;
-	for (iXstring = 0, iSourse = 0;iSourse < maxLenght;iSourse++ )
+	int lengthXstring = strlen(xString);
+	int lengthSourse = strlen(sourseString);
+	for (iXstring = 0, iSourse = 0;(lengthSourse>0 && iSourse < maxLenght);lengthSourse--,iSourse++ )
 	{
+		
 		if (sourseString[iSourse]==*xString)
-			for (iXstring = 0;iXstring < MAX_LENGHT_STRING;iXstring++,iSourse++)
+			for (iXstring = 0;iXstring < maxLenght;iXstring++,iSourse++)
 			{
 				if (xString[iXstring] == '\0')// condition for succsessfuly
 					return CHECK_OK;
@@ -286,38 +289,132 @@ int compareString(char* sourseString, char* xString, int maxLenght)
 
 	return CHECK_FALL;
 }
-void createListCountry(PREGION*listCountry,PREGION listRegions )//create pointer to array of pointers
+void prepareForListCountry(PREGION*listCountry,PREGION listRegions )//create pointer to array of pointers  of countses
 {
-	*listCountry = listRegions;
-	fillListCountry(listCountry, listRegions);
-}
-
-int fillListCountry(PREGION*listCountry, PREGION listRegions)
-{
- int i = 0;
-	while (1)
+	for (int i = 0;listRegions != NULL;i++)
 	{
-		if (strncmp(listCountry[i]->id_country, listRegions->id_country, MAX_LENGHT_STRING) == 0)
-		{
-			listCountry[++i] = listRegions;
-		}
-		if (listRegions->next == NULL)
-			return CHECK_OK;
+		listCountry[i] = listRegions;
 		listRegions = listRegions->next;
 	}
-}
-int countTotalCountry(PREGION listRegions, unsigned int *totalCountry)
-{
-	char *name= listRegions->id_country;
 
-	if (listRegions->next == NULL)
-		return CHECK_OK;
-	else
-		countTotalCountry(listRegions->next,totalCountry);
-	if (strncmp(listRegions->id_country, name, MAX_LENGHT_STRING) != 0)
+}
+
+
+unsigned int countTotalRegions(TREGION *listRegions)
+{
+	int count = 0;
+	for (unsigned int i = 0;listRegions != NULL;i++)
 	{
-		name = listRegions->id_country;
-		 totalCountry= *totalCountry+1;
+		listRegions = listRegions->next;
+		count = i;
+	}
+	return count;
+}
+
+unsigned int createListCountry(PREGION*listCountry, int lengthArray)
+{
+	//cut the some Country
+	int i;
+	unsigned count;
+	char*currentCountry = 0x0;
+	currentCountry = listCountry[0]->id_country;
+
+	
+	for (i = 1;listCountry[i] != NULL;i++)
+	{
+		if (compareString(listCountry[i]->id_country, currentCountry, MAX_LENGHT_STRING) == CHECK_OK)//if Country found then cut from list,pointer to NULL
+			listCountry[i] = NULL;
+		else//record in currentCountry the new name Country
+			currentCountry = listCountry[i]->id_country;
+	}
+	// sortihg of Country
+	for (i = 0,count=0;i < lengthArray;i++)
+	{
+		if (listCountry[i] != NULL)
+			continue;// search the empty position for sort of Countrys
+		for (int j = i;j < lengthArray;j++)// search the Country for shift
+		{
+			if (listCountry[j]== NULL)
+				continue;
+			listCountry[i] = listCountry[j];// the pointer up the list
+			listCountry[j] = NULL;
+			count = i;
+			break;// next loop
+		}
+		
+	}
+
+	return count;
+}
+int searchRegionsOfCountry(TREGION*listRegions, char*string)
+{
+	//printf("%s\t%s\t%s\n", "Country", "Id Region", "The Name of Region");
+		int lengthAnswer = strlen(string);
+	if (lengthAnswer == 0)
+	{
+		puts("Error serchRegionsOfCountry: input empty question, check the program");
+		return CHECK_FALL;
+	}
+	char*answer = (char*)calloc(lengthAnswer+2,sizeof(char));
+	strcpy(answer, string);
+	answer = smallLetter(answer);
+	char *currentRegion=(char*)calloc(MAX_LENGHT_STRING,sizeof(char));	
+	int lengthRegion = 0;
+	int i;
+	for (i = 0;listRegions != NULL;i++)
+	{
+		strcpy(currentRegion,listRegions->name);
+		currentRegion = smallLetter(currentRegion);
+		if (compareString(currentRegion, answer, MAX_LENGHT_STRING) == CHECK_OK)
+			printf("%s\t   %s\t    %s\n", listRegions->id_country, listRegions->id_region, listRegions->name);
+		listRegions = listRegions->next;
+		*currentRegion = '\0';// for safety
+	}
+	return CHECK_FALL;
+}
+char*smallLetter(char string[])
+{
+	for(int i=0;string[i]!='\0';i++)
+		string[i] = tolower( string[i]);
+	return string;
+}
+
+
+int searchListOfCountry(TREGION*listCountry[], char*string, TREGION*listRegions)
+{
+	//printf("%s\t%s\t%s\n", "Country", "Id Region", "The Name of Region");
+	int lengthAnswer = strlen(string);
+	if (lengthAnswer == 0)
+	{
+		puts("Error serchRegionsOfCountry: input empty question, check the program");
+		return CHECK_FALL;
+	}
+	char*answer = (char*)calloc(lengthAnswer + 2, sizeof(char));
+	strcpy(answer, string);
+	answer = smallLetter(answer);
+	char *currentCountry = (char*)calloc(MAX_LENGHT_STRING, sizeof(char));
+	int lengthCountry = 0;
+	int i;
+	for (i = 0;listCountry[i] != NULL;i++)
+	{
+		strcpy(currentCountry, listCountry[i]->id_country);
+		currentCountry = smallLetter(currentCountry);
+		if (compareString(currentCountry, answer, MAX_LENGHT_STRING) == CHECK_OK)
+			printRegionsOfCountry(listCountry[i]);
+		
+		*currentCountry = '\0';// for safety
+	}
+	return CHECK_FALL;
+}
+void printRegionsOfCountry(TREGION*listRegions)
+{
+	char *currentCountry = listRegions->id_country;
+
+	for (int i = 0;listRegions != NULL;i++)
+	{	if (compareString(listRegions->id_country, currentCountry, MAX_LENGHT_STRING) == CHECK_OK)
+				printf("%s\t   %s\t    %s\n", listRegions->id_country, listRegions->id_region, listRegions->name);
+		
+		listRegions = listRegions->next;	
 	}
 }
 //a)generate a list based on file data.

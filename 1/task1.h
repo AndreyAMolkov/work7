@@ -28,9 +28,14 @@ unsigned int countTotalRowInFile(FILE*fp);
 void findErrorTreeFromFile(TREGION*headStructere, FILE*fpcheck);// need for search a problem, and print it
 int findLDataStructureInString(char*buf, TREGION*headStructere);//if all elements of one structure  were find then go to next loop, else print its line of text on the console
 int compareString(char* sourseString, char* xString,int maxLenght);
-void createListCountry(PREGION*listCountry,PREGION listRegions);//create pointer to array of pointers
-int  fillListCountry(PREGION*listCountry, PREGION listRegions);
-int countTotalCountry(PREGION listRegions,unsigned int *totalCountry);
+void prepareForListCountry(PREGION*listCountry,PREGION listRegions);//create pointer to array of pointers
+unsigned int countTotalRegions(TREGION *listRegions);
+unsigned int createListCountry(PREGION*listCountry, int lengthArray);
+int searchRegionsOfCountry(TREGION*listRegions, char*answer);
+int checkCountryOrRegions(char*sourseString, char* Xstring);
+char*smallLetter(char string[]);// make all the letters in the lines small
+int searchListOfCountry(TREGION*listCountry[], char*string, TREGION*listRegions);
+void printRegionsOfCountry(TREGION*listRegions);
 /*
 . To write a program that creates a linked list with records of
 regions and their codes according to the content of the data file

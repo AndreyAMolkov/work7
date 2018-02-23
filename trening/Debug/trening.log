@@ -1,0 +1,5 @@
+﻿  mainTrening.c
+c:\git\work7\trening\maintrening.c(7): warning C4133: =: несовместимые типы - из "char *" в "FILE *"
+c:\git\work7\trening\maintrening.c(10): warning C4133: =: несовместимые типы - из "FILE *" в "char *"
+  trening.vcxproj -> C:\git\work7\Debug\trening.exe
+  trening.vcxproj -> C:\git\work7\Debug\trening.pdb (Full PDB)

@@ -37,7 +37,7 @@ struct SYM* buildTree(TSYM *psym[], int N);
 void desiredPositionPSYM(PSYM*psym, int N, TSYM*temp);
 void makeCodes(TSYM *root);
 long int readPak(FILE*in, FILE*out, int number0LastBit);
-int unpack(UC buf,FILE*fp);
+int unpack(char buf,FILE*fp);
 int createFp(FILE*fp101, TSYM*root, FILE*fp);
 void printArrayForScreen(PSYM*psyms);
 int printArrayForCheck(PSYM*psyms);

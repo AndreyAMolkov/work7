@@ -237,11 +237,11 @@ void printArrayForScreen(PSYM*psyms)
 
 	int i;
 	int count = 0;
-	printf("%s    %s      %s\n", "Input ch", "frequency","code");
+	printf("%s\t%s\t%s\t%s\t%s\n", "Input ch", "frequency", "CODE", "lessNode", "moreNode");
 
 	for ( i = 0;psyms[i]!=NULL;i++)
 	{
-		printf("%u\t%f\t%s\n", psyms[i]->ch, psyms[i]->freq,psyms[i]->code);
+		printf("%u\t%f\t%s\t%p\t%p\n", psyms[i]->ch, psyms[i]->freq, psyms[i]->code, psyms[i]->lessNode, psyms[i]->moreNode);
 		count = i;
 	}
 	printf("Number of possition =%i\n", count);

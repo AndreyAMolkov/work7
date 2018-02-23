@@ -31,7 +31,6 @@ int main()
 	long int lengthFpMOL;
 	PSYM *psyms;
 	PSYM *psymsCode;
-	//int number;
 	ULL numberLetter;
 	TSYM* treeSym;
 	int ch = ' ';
@@ -111,6 +110,7 @@ printArrayForScreen(psyms);
 		psymsCode = (PSYM*)calloc(maxlengthArray + 2, sizeof(PSYM));
 
 	copyParrToChange(psyms, psymsCode);
+	brushAdresses(psymsCode);//preparation for the Assembly of the tree, do cleaning old addresses
 	root = 0x0;
 	root = buildTree(psymsCode, maxlengthArray);//
 
@@ -151,7 +151,7 @@ printArrayForScreen(psyms);
 	rewind(fp101);
 	pos = ftell(fp101);
 	number0LastBit = WRONGNEGATIVEVALUE;//initialisatioon wrong value 
-	number0LastBit = lengthFp101 % SIZEPAK;
+	number0LastBit =SIZEPAK- lengthFp101 % SIZEPAK;// calculate how much it will take zeros in the tail
 	result=creatHederInfinalFile(fpMOL,maxlengthArray,psyms,number0LastBit,numberLetter);
 	if (result == CHECK_FALL)
 		return 1;
@@ -159,9 +159,8 @@ printArrayForScreen(psyms);
 		puts("create header in the final file was OK\n");
 	positionEndHeader = WRONGNEGATIVEVALUE;
 	positionEndHeader = result;
-
 	lengthFpMOL = 0;
-	lengthFpMOL = createPak(fpMOL,fp101,  &number0LastBit);// final
+	lengthFpMOL = createPak(fpMOL,fp101,  number0LastBit);// final
 	if (lengthFpMOL == EMPTY)
 	{
 		printf("Error create final file. EXIT");
@@ -173,11 +172,14 @@ printArrayForScreen(psyms);
 	}
 
 result = WRONGNEGATIVEVALUE;
-result = lengthFp101 - (lengthFpMOL * SIZEPAK-number0LastBit);
+result = lengthFp101 - ((lengthFpMOL * SIZEPAK)-number0LastBit);
 if (result != 0)
-printf("ERROR creatPak and createFile101, different=%li",result);
+{
+	printf("ERROR: wrong creatPak or createFile101, different=%li.   Exit\n", result);
+	return 1;
+}
 else
-	printf("Te coding was OK, different=%li", result);
+	printf("To coding was OK, different=%li\n", result);
 	
  fclose(fp);
 fclose(fp101);

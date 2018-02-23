@@ -103,20 +103,25 @@ PSYM*recordPsymsFloat(int maxlengthArray, TSYM* psyms[], float*stringFloat)
 	return psyms;
 }
 
-long int readPak(FILE*in, FILE*out, int number0LastBit)
+long int readPak(FILE*fileTo, FILE*fileFrom, int number0LastBit)
 {
-	int pos3 = ftell(out);
+	int pos3 = ftell(fileFrom);
 	//char *bufChar = (char*)calloc(SIZEPAK, sizeof(char));
-	unsigned char charTemp = GARBAGE;
+	char charTemp = GARBAGE;
 	unsigned int count = 0;
 	int result = 0;
 	
 	do {
-		long int pos = ftell(out);
-		result=fread(&charTemp, sizeof(unsigned char), 1, out);
-		 unpack(charTemp,in);
-		 if (result == 0)
-			// fseek(in, -number0LastBit, SEEK_CUR);
+		long int pos = ftell(fileFrom);
+		result=fread(&charTemp, sizeof(unsigned char), 1, fileFrom);
+		if (result == 0)
+		{
+			fseek(fileTo, -number0LastBit, SEEK_CUR);// place the pointer in the desired position = -number0LastBit of numbers
+			fputc(' ', fileTo);// cut the tail
+			break;
+		}
+		unpack(charTemp, fileTo);
+		 
 			charTemp = GARBAGE;
 		count++;
 	} while (result != 0);// check the condition equality lenght  to SIZE f one char (in current event it is 8 bit)
@@ -124,7 +129,7 @@ long int readPak(FILE*in, FILE*out, int number0LastBit)
 	return count;
 }
 
-int unpack(unsigned char buf,FILE*fp)
+int unpack(char buf,FILE*fp)
 {
 	int count=0;
 	union CODE code;
@@ -148,35 +153,51 @@ int createFp(FILE*fp101, TSYM*root, FILE*fp)
 {
 	TSYM*Beginner = root;
 	char ch = ' ';
+	UC letter = ' ';
 	int pos = ftell(fp101);
 	while (fread(&ch, sizeof(char), 1, fp101)==CHECK_OK)
 	{
-
-		if (ch == '1')
-		{
-			if (root->lessNode == NULL)
+		letter = root->ch;// record value from the current structure in letter
+		
+		int posFile = ftell(fp101);//check position in file for check
+			if (ch == '1')
 			{
-				fwrite(&root->ch, sizeof(UC), 1, fp);
-				root = Beginner;
+				root = root->lessNode;// go to intro tree
+				if (root == NULL)// check the path is true or false
+				{
+					fwrite(&letter, sizeof(UC), 1, fp);// record the letter becouse after it there is no path
+					//fputc(letter, stdout);// need for check
+					root = Beginner;
+					fseek(fp101, -1, SEEK_CUR);
+					letter = GARBAGE;
+				}
+				
+			}
+			else if (ch == '0')
+			{
+				root = root->moreNode;// got to intro tree
+				if (root == NULL)
+				{
+					fwrite(&letter, sizeof(UC), 1, fp);// found the letter becouse after it there is no path
+					//fputc(letter, stdout);// need for check
+					root = Beginner;
+					fseek(fp101, -1, SEEK_CUR);// to pointer -1 position in file
+					letter = GARBAGE;
+				}
+				
 			}
 			else
-				root = root->lessNode;
-		}
-		else if (ch == '0')
-		{
-			if (root->moreNode == NULL)
 			{
-				fwrite(&root->ch, sizeof(UC), 1, fp);
-				root = Beginner;
+				fwrite(&letter, sizeof(UC), 1, fp);// found the letter becouse after it there is no path
+				//fputc(letter, stdout);// need for check
+				//fputc('\n', stdout);
+			return CHECK_OK; ;// becouse found ' ', this symbol haven't '1' or '0'
 			}
-			else
-				root = root->moreNode;
-		}
-		else
-			return CHECK_FALL;
-
-		ch = GARBAGE;
-
+	ch = GARBAGE;// for safe fill incorect value
+	
 	}
+		
+
+	
 	return CHECK_OK;
 }

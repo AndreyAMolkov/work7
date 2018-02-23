@@ -128,7 +128,7 @@ long int createFile101(FILE*fp_in,PSYM* psyms, FILE*fp101)
 		}
 		return count;
 }
-long int createPak(FILE*in,FILE*out,int *number0LastBit)
+long int createPak(FILE*in,FILE*out,int number0LastBit)
 {
 	
 	char *bufChar=(char*)calloc(SIZEPAK+2, sizeof(char));
@@ -138,7 +138,7 @@ long int createPak(FILE*in,FILE*out,int *number0LastBit)
 	long int pos = ftell(in);
 	//fseek(in, 0, SEEK_); ;// need for return to first symbol 
 	do{
-int posBegine = ftell(out);
+int posBegine = ftell(out);// need for check
 		fread(bufChar, sizeof(char), SIZEPAK, out);
 		//bufChar = readFileCh(in, bufChar);
 		if (bufChar == ERRORPointer)
@@ -152,18 +152,39 @@ int posBegine = ftell(out);
 		 int pos3 = ftell(out);
 		fwrite(&charTemp, sizeof(unsigned char), 1, in);
 		int posRecord = ftell(in);
-		memset(bufChar, EMPTY, sizeof(char));// fill wrong value
+		brushString(bufChar);/// fill wrong value
 		*bufChar='\0',//for safety we put a pointer to '\0'
 		charTemp = GARBAGE;
 		count++;
 	} while (len== SIZEPAK);// check the condition equality lenght  to SIZE f one char (in current event it is 8 bit)
 	
-	if (len == SIZEPAK)
+/*	23.02 check wrong pack
+if (len == SIZEPAK)
 		*number0LastBit = EMPTY;
 	else
 		*number0LastBit = SIZEPAK-len;
+		*/
 	// free(bufChar);
 	 return count;
+}
+void brushString(char *string)
+{
+	for (int i = 0;string[i] != '\0';i++)
+		string[i] = '\0';
+}
+unsigned char pack(unsigned char buf[])
+{
+	union CODE code;
+
+	code.byte.b1 = buf[0] - '0';
+	code.byte.b2 = buf[1] - '0';
+	code.byte.b3 = buf[2] - '0';
+	code.byte.b4 = buf[3] - '0';
+	code.byte.b5 = buf[4] - '0';
+	code.byte.b6 = buf[5] - '0';
+	code.byte.b7 = buf[6] - '0';
+	code.byte.b8 = buf[7] - '0';
+	return code.ch;
 }
 
 int checkMadeCodesUsually(PSYM*psyms)
@@ -179,20 +200,6 @@ int checkMadeCodesUsually(PSYM*psyms)
 	}
 
 	return countGap;
-}
-unsigned char pack(unsigned char buf[])
-{
-	union CODE code;
-
-	code.byte.b1 = buf[0] - '0';
-	code.byte.b2 = buf[1] - '0';
-	code.byte.b3 = buf[2] - '0';
-	code.byte.b4 = buf[3] - '0';
-	code.byte.b5 = buf[4] - '0';
-	code.byte.b6 = buf[5] - '0';
-	code.byte.b7 = buf[6] - '0';
-	code.byte.b8 = buf[7] - '0';
-	return code.ch;
 }
 int creatHederInfinalFile(FILE*fpMOL,int maxlengthArray,PSYM* psyms,int number0LastBit,ULL numberLetter)
 {
@@ -262,19 +269,12 @@ float*createStringFloat(int maxlengthArray, PSYM* psyms)
 	stringFloat[i] = '\0';
 	return stringFloat;
 }
-char *int2str(char *buf,int value)
+void brushAdresses(TSYM*psymsCode[])
 {
-	static	int i = -1;// need for from next step i=0
-	i++;
-	if ((value) == 0)
+	for (int i = 0;psymsCode[i] != NULL;i++)
 	{
-		buf[i] = 0;
-		i = 0;
-		return buf;
+		psymsCode[i]->moreNode=NULL;
+		psymsCode[i]->lessNode=NULL;
 	}
-	else
-		int2str(buf, (value / 10));
-	buf[i++] = value % 10 + '0';
-	return buf;
 
 }

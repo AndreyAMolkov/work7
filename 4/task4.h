@@ -42,19 +42,20 @@ int checkSumForFrequencyArray(PSYM*psyms);
 void printArrayForScreen(PSYM*psyms);
 TSYM* buildTree(TSYM *psym[], int N);
 void countTotalStructInTree(PSYM treeSym, int *totalStructInfile);
-
-//struct SYM* buildTree(TSYM *psym[], int N);
 void desiredPositionPSYM(PSYM*psym,int N ,TSYM*temp);
 void makeCodes(TSYM *root);
 long int  createFile101(FILE*fp_in, PSYM* syms, FILE*fp101);
 void copyParrToChange(PSYM*psyms, PSYM*psymsCode);// copy pointer to arr of poiters for build tree
 unsigned char pack(unsigned char buf[]);
 long int  createPak(FILE*in, FILE*out, int number0LastBit);
-
 int checkMadeCodesUsually(PSYM*psyms);
-int creatHederInfinalFile(FILE*fpMOL, int maxlengthArray, PSYM* psyms, int number0LastBit, ULL numberLetter);
+int creatHederInfinalFile(FILE*fpMOL, int maxlengthArray, PSYM* psyms, int number0LastBit,ULL sizeInputFile,UC*extension);
 int recordPSYMtoString(int maxlengthArray, PSYM* psyms, FILE*fpMOL);
 UC*createStringChar(int maxlengthArray, PSYM* psyms);
 float*createStringFloat(int maxlengthArray, PSYM* psyms);
 void brushAdresses(TSYM*psymsCode[]);
 void brushString(char *string);
+ULL findSizeInputFile(FILE*fp);// determitation of the size of the file
+UC*findExtension(UC*string);
+UC*createNameFile(UC*string, UC*newExtension, UC*flagCopy);
+int brushPointersArray(TSYM**parr[]);

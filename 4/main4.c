@@ -2,6 +2,7 @@
 #include<stdio.h>
 #include<ctype.h>
 #include<stdlib.h>
+#include<string.h>
 #include "task4.h"
 #define MAXSYMB 256
 //xtern FILE *fpOut;
@@ -17,16 +18,19 @@
 #define WRITE "wb"
 #define READ "rb"
 int main()
-{
+{//int argc, UC*argv[]
+	
+									UC *argv[256];
+									argv[1] = "1.txt";//it need for debug
+									int argc = 2;
+									
+	
 	int number0LastBit;//number added zerros in the last bit
 	int maxlengthArray;//the number of unique charactrs.Contains the numberof rows in the table occurences.
 	int countGap;
 	long int result;// need for checks
 	struct SYM *root;
 	BASE_TYPE maxCount;
-	FILE *fp;// input file
-	FILE*fp101;//file with changing of data of input file. outcome - Must had the file with '1' and '0'; 
-	FILE*fpMOL;// result of our work
 	long int lengthFp101;
 	long int lengthFpMOL;
 	PSYM *psyms;
@@ -37,18 +41,38 @@ int main()
 	char checkchar;
 	int totalStructInfile;
 	int positionEndHeader;
-	fp = fopen("1.txt", READ);// The input file
-	if (!fp)
+								
+	int lengthInputName;
+	ULL sizeInputFile;
+	
+							if (argc == 1)
+							{
+								puts("ERROR: not file");
+								return 1;
+							}
+	lengthInputName = 0;
+	lengthInputName = strlen(*(argv+1));// will be use in the signature before nameFile
+	FILE*fp;
+	fp = 0x0;
+	fp = fopen(argv[1], READ);// The input file
+	if (fp==NULL)
 	{
 		puts("error opening file fp");
 		return 1;// error opening  files 
 	}
 	for (treeSym = 0x0, numberLetter = 0;(ch = fgetc(fp)) != EOF;numberLetter++)// are creating a tree from an input file and the total quantity of letters
 	{
+		
 		checkchar = ch;
 		treeSym = makeTree(treeSym, ch, 128);//adress the first node
 
 	}
+	if (numberLetter == EMPTY)
+	{
+		printf("ERROR maketree.numberLenner = %u",numberLetter);
+		return 1;
+	}
+
 	totalStructInfile = 0;//The quantity of structs in file
 	countTotalStructInTree(treeSym, &totalStructInfile);
 	if (treeSym == 0x0)
@@ -81,11 +105,11 @@ int main()
 		puts("ERROR: made frequency in the array");
 		return 1;
 	}
-	if (!printArrayForCheck(psyms))
-	{
-		puts("Error: fall of print of the file for check");
-		return 1;
-	}
+	
+	//if necessary for the developer
+
+	//printArrayForCheck(psyms);
+	
 	maxCount = 0;
 	Tree2max(treeSym, &maxCount);// search the maximum value for a single symbol
 	if (!sort(psyms, maxCount))
@@ -98,7 +122,7 @@ int main()
 		puts("Error: data of psyms different from data the treeSym");
 		return 1;
 	}
-printArrayForScreen(psyms);
+	
 	psymsCode = 0x0;
 	while (!psymsCode)
 		psymsCode = (PSYM*)calloc(maxlengthArray + 2, sizeof(PSYM));
@@ -108,6 +132,9 @@ printArrayForScreen(psyms);
 	root = 0x0;
 	root = buildTree(psymsCode, maxlengthArray);//
 	makeCodes(root);
+
+	printArrayForScreen(psyms);//if necessary for the developer
+
 	countGap = 0;
 	countGap = checkMadeCodesUsually(psyms);
 	if (countGap > 0)
@@ -115,35 +142,66 @@ printArrayForScreen(psyms);
 		printf("Error makeCodes: structs have field not contained code of '0' or '1'  =%i ", countGap);
 		return 1;
 	}
-	printArrayForScreen(psyms);
+	        //printArrayForScreen(psyms);//if necessary for the developer
+	FILE*fp101;
+	fp101 = 0x0;
 	fp101 = fopen("file with 101.txt", WRITE);
+	if (fp101 == NULL)
+	{
+		puts("ERROR opened file fp101");
+		return 1;
+	}
 	long int pos = ftell(fp101);
 	lengthFp101 = EMPTY;
-	pos = ftell(fp);
-	rewind(fp);
 	lengthFp101 = createFile101(fp, psyms, fp101);// 
 	if (lengthFp101 == EMPTY)
 	{
 		puts("ERROR create File101:length file equalty ZERO ");
 		return 1;
 	}
-	fclose(fp101);// close for open for reading
+	
+	
+	//fclose(fp101);// close for open for reading
+	//if(fp101!=NULL)
+	//	free(fp101);
+
 	fp101 = fopen("file with 101.txt", READ);
-	fpMOL = fopen("result.txt", WRITE);
+	if (fp101 == NULL)
+	{
+		puts("ERROR the second opened fp101 gor read");
+		return 1;
+	}
+	//create Name for outcome of file with expasion .MOL
+	UC*nameOutputFile = 0x0;
+	UC newExtension[] = ".txt";
+	UC*flagChange = 0x0; //"_copy";// add to the name if you want to notify the user about protecting an existing file
+	if((nameOutputFile = createNameFile(argv[1],newExtension,flagChange))==NULL)
+		return 1;
+	FILE*fpMOL;
+	fpMOL = 0x0;
+	fpMOL = fopen(nameOutputFile, WRITE);
 	if (fpMOL == NULL)
 	{
 		puts("ERROR opened thefinal file");
 		return 1;
 	}
+
+
 	rewind(fp101);
 	pos = ftell(fp101);
 	number0LastBit = WRONGNEGATIVEVALUE;//initialisatioon wrong value 
 	number0LastBit =SIZEPAK- lengthFp101 % SIZEPAK;// calculate how much it will take zeros in the tail
-	result=creatHederInfinalFile(fpMOL,maxlengthArray,psyms,number0LastBit,numberLetter);
+	
+	UC*extension = 0x0;
+	if((extension = findExtension(argv[1]))==NULL)
+			return 1;
+
+	sizeInputFile = 0;
+	sizeInputFile = findSizeInputFile(fp);
+	result=creatHederInfinalFile(fpMOL,maxlengthArray,psyms,number0LastBit,sizeInputFile, extension);
 	if (result == CHECK_FALL)
 		return 1;
-	else
-		puts("create header in the final file was OK\n");
+	
 	positionEndHeader = WRONGNEGATIVEVALUE;
 	positionEndHeader = result;
 	lengthFpMOL = 0;
@@ -167,11 +225,36 @@ if (result != 0)
 }
 else
 {
-	printf("To coding was OK, different=%li\n", result);
+	printf("The file is successfully archived, different=%li\nthe Adress for the file - %s\n", result, nameOutputFile);
 }
 	
- fclose(fp);
-fclose(fp101);
-fclose(fpMOL);
+if (fp != NULL)
+{
+	fclose(fp);
+	free(fp);
+}
+
+ if (fp101 != NULL)
+ {
+	 fclose(fp101);
+	 free(fp101);
+ }
+ if (fpMOL != NULL)
+ {
+	 fclose(fpMOL);
+	 free(fpMOL);
+ }
+
+
+ if (nameOutputFile != NULL)
+	free(nameOutputFile);
+ 
+ if (extension != NULL)
+	free(extension);
+
+	 if (root != NULL)
+		 free(root);
+	 if (treeSym != NULL)
+		 free(treeSym);
 	return 0;
 }

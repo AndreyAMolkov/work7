@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DEFECTS><DEFECT>
+    <SFA>
+      <FILEPATH>c:\git\work7\4\</FILEPATH>
+      <FILENAME>main4.c</FILENAME>
+      <LINE>72</LINE>
+      <COLUMN>8</COLUMN>
+    </SFA>
+    <DEFECTCODE>6271</DEFECTCODE>
+    <DESCRIPTION>В "printf" передан лишний аргумент:  _Param_(2) не используется строкой формата.</DESCRIPTION>
+    <FUNCTION>main</FUNCTION>
+    <DECORATED>main</DECORATED>
+    <FUNCLINE>20</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT><DEFECT>
+    <SFA>
+      <FILEPATH>c:\git\work7\4\</FILEPATH>
+      <FILENAME>task4.c</FILENAME>
+      <LINE>97</LINE>
+      <COLUMN>9</COLUMN>
+    </SFA>
+    <DEFECTCODE>6340</DEFECTCODE>
+    <DESCRIPTION>Несоответствие при подписи: "unsigned char" передан в качестве параметра _Param_(2), хотя при вызове "printf" требуется некоторый тип "signed".</DESCRIPTION>
+    <FUNCTION>checkMadeCodesRecurs</FUNCTION>
+    <DECORATED>checkMadeCodesRecurs</DECORATED>
+    <FUNCLINE>87</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT><DEFECT>
+    <SFA>
+      <FILEPATH>c:\git\work7\4\</FILEPATH>
+      <FILENAME>task4.c</FILENAME>
+      <LINE>106</LINE>
+      <COLUMN>9</COLUMN>
+    </SFA>
+    <DEFECTCODE>6340</DEFECTCODE>
+    <DESCRIPTION>Несоответствие при подписи: "unsigned char" передан в качестве параметра _Param_(2), хотя при вызове "printf" требуется некоторый тип "signed".</DESCRIPTION>
+    <FUNCTION>checkMadeCodesRecurs</FUNCTION>
+    <DECORATED>checkMadeCodesRecurs</DECORATED>
+    <FUNCLINE>87</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT></DEFECTS>

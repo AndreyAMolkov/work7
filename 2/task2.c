@@ -61,7 +61,9 @@ TSYM *makeTree(TSYM *treeSym, UC *word, UC Node)
 	treeCh=treeSym->ch;
 	if (treeSym == NULL)
 	{
+		while(treeSym==NULL)
 		treeSym = (TSYM*)calloc(1,sizeof(TSYM));
+
 		strcpy(treeSym->ch, word);
 		treeSym->count = 0;
 		treeSym->moreNode = NULL;

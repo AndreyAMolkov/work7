@@ -49,7 +49,7 @@ int main()
 	totalCounties = 0;
 	totalCounties =createListCountry(listCountry,totalRegions);
 	//(b)Search and display all the data in the letter designation of the country.
-	printf("Do You would search (Yes or No)\n");
+	printf("\nDo You would search (Yes or No)\n");
 	scanf("%s", answer);
 	if (tolower(*answer) == 'n')
 	{
@@ -62,17 +62,18 @@ int main()
 	{
 		printf("Input the name of Region ( for example, Novgorod)\n");
 		scanf("%s", answer);
-		
-		if(searchRegionsOfCountry(listRegions, answer)==CHECK_FALL)
-					puts("The region not found\n");
+		searchRegionsOfCountry(listRegions, answer);
+		//if(searchRegionsOfCountry(listRegions, answer)==CHECK_FALL)
+		//			puts("The region not found\n");
 	}
 	if (tolower(*answer) == 'c')
 	{
 		printf("Input the name of Country ( for example, Zimbabve)\n");
 		scanf("%s", answer);
 
-		if (searchListOfCountry(listCountry, answer,listRegions) == CHECK_FALL)
-			puts(" Country not found\n");
+		searchListOfCountry(listCountry, answer, listRegions);
+		//if (searchListOfCountry(listCountry, answer,listRegions) == CHECK_FALL)
+		//	puts(" Country not found\n");
 	}
 	return 0;
 }

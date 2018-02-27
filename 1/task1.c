@@ -71,8 +71,8 @@ TREGION* makeListOfStructure(TREGION* region, char *stringOfRegion)
 {
 	if (region == NULL)
 	{
-		if ((region = fillStruct(region, stringOfRegion)) == 0x0)// record data in a structure fall
-			printf("Attention: makeListOfStructure: the gap in data records in Country - %s code of region - %s  name of region - %s\n", region->id_country, region->id_region, region->name);
+	//	if ((region = fillStruct(region, stringOfRegion)) == 0x0)// record data in a structure fall
+	//		printf("Attention: makeListOfStructure: the gap in data records in Country - %s code of region - %s  name of region - %s\n", region->id_country, region->id_region, region->name);
 	}
 	else
 	{
@@ -102,8 +102,12 @@ TREGION*fillStruct(TREGION *Region, char*stringOfRegion)
 	}
 			
 	char*p = stringOfRegion;
-	Region =(TREGION*) calloc(1, sizeof(TREGION));
-	Region->next = NULL;
+	while (Region == NULL)
+	{
+		Region = (TREGION*)calloc(1, sizeof(TREGION));
+	}
+	
+		Region->next = NULL;
 	p = fillBox(p, Region->id_country);
 	p = fillBox(p, Region->id_region);
 	p = fillBox(p , Region->name);
@@ -355,10 +359,16 @@ int searchRegionsOfCountry(TREGION*listRegions, char*string)
 		puts("Error serchRegionsOfCountry: input empty question, check the program");
 		return CHECK_FALL;
 	}
-	char*answer = (char*)calloc(lengthAnswer+2,sizeof(char));
+	char*answer=0x0;
+	while (answer==NULL)
+	{
+		answer= (char*)calloc(lengthAnswer + 2, sizeof(char));
+	}
 	strcpy(answer, string);
 	answer = smallLetter(answer);
-	char *currentRegion=(char*)calloc(MAX_LENGHT_STRING,sizeof(char));	
+	char *currentRegion = 0x0;
+	while(currentRegion==NULL)
+		currentRegion=(char*)calloc(MAX_LENGHT_STRING,sizeof(char));	
 	int lengthRegion = 0;
 	int i;
 	for (i = 0;listRegions != NULL;i++)
@@ -389,10 +399,14 @@ int searchListOfCountry(TREGION*listCountry[], char*string, TREGION*listRegions)
 		puts("Error serchRegionsOfCountry: input empty question, check the program");
 		return CHECK_FALL;
 	}
-	char*answer = (char*)calloc(lengthAnswer + 2, sizeof(char));
+	char*answer = 0x0;
+	while(answer==NULL)
+		answer= (char*)calloc(lengthAnswer + 2, sizeof(char));
 	strcpy(answer, string);
 	answer = smallLetter(answer);
-	char *currentCountry = (char*)calloc(MAX_LENGHT_STRING, sizeof(char));
+	char *currentCountry = 0x0;
+	while(currentCountry==0)
+		currentCountry= (char*)calloc(MAX_LENGHT_STRING, sizeof(char));
 	int lengthCountry = 0;
 	int i;
 	for (i = 0;listCountry[i] != NULL;i++)

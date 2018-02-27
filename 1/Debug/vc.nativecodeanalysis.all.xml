@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DEFECTS><DEFECT>
+    <SFA>
+      <FILEPATH>c:\git\work7\1\</FILEPATH>
+      <FILENAME>main1.c</FILENAME>
+      <LINE>53</LINE>
+      <COLUMN>6</COLUMN>
+    </SFA>
+    <DEFECTCODE>6031</DEFECTCODE>
+    <DESCRIPTION>Возвращаемое значение пропущено: "scanf".</DESCRIPTION>
+    <FUNCTION>main</FUNCTION>
+    <DECORATED>main</DECORATED>
+    <FUNCLINE>11</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT><DEFECT>
+    <SFA>
+      <FILEPATH>c:\git\work7\1\</FILEPATH>
+      <FILENAME>main1.c</FILENAME>
+      <LINE>60</LINE>
+      <COLUMN>6</COLUMN>
+    </SFA>
+    <DEFECTCODE>6031</DEFECTCODE>
+    <DESCRIPTION>Возвращаемое значение пропущено: "scanf".</DESCRIPTION>
+    <FUNCTION>main</FUNCTION>
+    <DECORATED>main</DECORATED>
+    <FUNCLINE>11</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT><DEFECT>
+    <SFA>
+      <FILEPATH>c:\git\work7\1\</FILEPATH>
+      <FILENAME>main1.c</FILENAME>
+      <LINE>64</LINE>
+      <COLUMN>7</COLUMN>
+    </SFA>
+    <DEFECTCODE>6031</DEFECTCODE>
+    <DESCRIPTION>Возвращаемое значение пропущено: "scanf".</DESCRIPTION>
+    <FUNCTION>main</FUNCTION>
+    <DECORATED>main</DECORATED>
+    <FUNCLINE>11</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT><DEFECT>
+    <SFA>
+      <FILEPATH>c:\git\work7\1\</FILEPATH>
+      <FILENAME>main1.c</FILENAME>
+      <LINE>72</LINE>
+      <COLUMN>7</COLUMN>
+    </SFA>
+    <DEFECTCODE>6031</DEFECTCODE>
+    <DESCRIPTION>Возвращаемое значение пропущено: "scanf".</DESCRIPTION>
+    <FUNCTION>main</FUNCTION>
+    <DECORATED>main</DECORATED>
+    <FUNCLINE>11</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT><DEFECT>
+    <SFA>
+      <FILEPATH>c:\git\work7\1\</FILEPATH>
+      <FILENAME>task1.c</FILENAME>
+      <LINE>167</LINE>
+      <COLUMN>13</COLUMN>
+    </SFA>
+    <DEFECTCODE>6330</DEFECTCODE>
+    <DESCRIPTION>"char" передан в качестве параметра _Param_(1), хотя при вызове "isalpha" требуется "unsigned char".</DESCRIPTION>
+    <FUNCTION>prepareForLetter</FUNCTION>
+    <DECORATED>prepareForLetter</DECORATED>
+    <FUNCLINE>162</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT><DEFECT>
+    <SFA>
+      <FILEPATH>c:\git\work7\1\</FILEPATH>
+      <FILENAME>task1.c</FILENAME>
+      <LINE>167</LINE>
+      <COLUMN>33</COLUMN>
+    </SFA>
+    <DEFECTCODE>6330</DEFECTCODE>
+    <DESCRIPTION>"char" передан в качестве параметра _Param_(1), хотя при вызове "isalnum" требуется "unsigned char".</DESCRIPTION>
+    <FUNCTION>prepareForLetter</FUNCTION>
+    <DECORATED>prepareForLetter</DECORATED>
+    <FUNCLINE>162</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT></DEFECTS>

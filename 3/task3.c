@@ -5,7 +5,6 @@
 #include <string.h>
 #include<ctype.h>
 #define MAXSYMB 256
-FILE *fpOut;
 #define successfully 1
 #define fall 0
 typedef unsigned char UC;
@@ -61,7 +60,9 @@ PSYM makeTree(PSYM treeSym, UC inputSymbol, UC Node)
 
 	if (treeSym == NULL)
 	{
-		treeSym = (PSYM)malloc(sizeof(TSYM));
+		while (treeSym == NULL)
+			treeSym = (TSYM*)calloc(1,sizeof(TSYM));
+		
 		treeSym->ch = inputSymbol;
 		//strcpy(treeSym->chars, ch);// need if wil be string
 		treeSym->count=1;

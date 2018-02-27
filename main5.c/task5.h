@@ -1,3 +1,4 @@
+
 #include<stdio.h>
 #include<stdlib.h>
 typedef unsigned long long int ULL;
@@ -29,7 +30,7 @@ union CODE {
 };
 typedef union CODE TCODE;
 
-PSYM*readHederInfinalFile(FILE*fpMOL, int *maxlengthArray, TSYM* psyms[], int *number0LastBit, ULL *numberLetter);
+PSYM* readHederInfinalFile(FILE*fpMOL, int *maxlengthArray, TSYM* psyms[], int *number0LastBit, ULL*sizeInputFile, UC**extension);
 PSYM*recordStringtoPSYM(int maxlengthArray, TSYM* psyms[], FILE*fpMOL);
 PSYM*recordPsymsChar(int maxlengthArray, TSYM* psyms[], UC*stringChar);
 PSYM*recordPsymsFloat(int maxlengthArray, TSYM* psyms[], float*stringFloat);
@@ -42,3 +43,6 @@ int createFp(FILE*fp101, TSYM*root, FILE*fp);
 void printArrayForScreen(PSYM*psyms);
 int printArrayForCheck(PSYM*psyms);
 void copyParrToChange(PSYM*psyms, PSYM*psymsCode);
+ULL findSizeInputFile(FILE*fp);
+UC*createNameFile(UC*string, UC*newExtension, UC*flagCopy);
+int brushPointersArray(PSYM*parr[]);

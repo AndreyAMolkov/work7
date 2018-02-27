@@ -1,4 +1,7 @@
 ﻿  task2.c
-c:\git\work7\2\task2.c(26): error C2065: countSearch: необъявленный идентификатор
   main2.c
+  Выполнение анализа кода для C/C++...
   Создание кода...
+c:\git\work7\2\task2.c(35): warning C4715: searchTree: значение возвращается не при всех путях выполнения
+  2.vcxproj -> C:\git\work7\Debug\2.exe
+  2.vcxproj -> C:\git\work7\Debug\2.pdb (Full PDB)

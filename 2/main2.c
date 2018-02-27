@@ -10,9 +10,9 @@ int main()
 	TSYM *root = NULL;
 	 fp = fopen("begine.txt", "rt");
 	fpsearch = fopen("The C.txt", "rt");
-	root = (TSYM*)calloc(1, sizeof(TSYM));
+	
 	unsigned int i;
-	if (!(fp || fpsearch))
+	if ((fp==NULL || fpsearch==NULL))
 	{
 		perror("File: ");
 		return 1;
@@ -23,6 +23,10 @@ int main()
 		if (i == 0)
 		{
 			char *word = chomp(buf);
+			while (root == NULL)
+			{
+				root = (TSYM*)calloc(1, sizeof(TSYM));
+			}
 			strcpy(root->ch, word);
 			root->count = 0;
 			root->moreNode = NULL;
@@ -39,7 +43,8 @@ int main()
 		searchTree(root, buf, 50);
 	}
 	printTree(root);
-	fclose(fp);
+	if(fp!=NULL)
+		fclose(fp);
 	fclose(fpsearch);
 	return 0;
 }

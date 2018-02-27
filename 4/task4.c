@@ -2,6 +2,8 @@
 #define CHECK_FALL 0
 #define CHECK_OK 1
 #include "task4.h"
+#include<stdlib.h>
+#include<stdio.h>
 #include<string.h>
 #define MAXSYMB 256
 #define SIZEPAK 8
@@ -23,13 +25,16 @@ void copyParrToChange(PSYM*psyms, PSYM*psymsCode)
 struct SYM* buildTree(TSYM *psym[], int N)
 {
 	// creation temporary node
-	struct SYM *temp = (struct SYM*)malloc(sizeof(struct SYM));
+	struct SYM *temp = 0x0;
+	while (temp == NULL)
+		temp= (struct SYM*)malloc(sizeof(struct SYM));
+	
 	// In frequency field records the sum of frequencies of the last and penultimate elements of the psym array
 	temp->freq = psym[N - 2]->freq + psym[N - 1]->freq;
 	// associate the created node with the last two nodes
 	temp->moreNode = psym[N - 1];
 	temp->lessNode = psym[N - 2];
-	temp->ch = -1;// initilisation negative number(a wrong value)
+	temp->ch = 0;
 	temp->count = 0;
 	temp->code[0] = '\0';
 	if (N == 2) // We have created a root elements with a frequency of 1.0
@@ -81,7 +86,7 @@ void makeCodes(TSYM *root)
 
 void checkMadeCodesRecurs(TSYM*root,int *countGap)
 {
-	char checkSymbol = '/0';
+	char checkSymbol = ' ';
 	
 
 	if (root->moreNode)
@@ -108,6 +113,7 @@ void checkMadeCodesRecurs(TSYM*root,int *countGap)
 }
 long int createFile101(FILE*fp_in,PSYM* psyms, FILE*fp101)
 {
+	rewind(fp_in);
 	int ch=0; // the code of symbol from input file
 	unsigned int count=0;
 	int i=0;
@@ -131,7 +137,9 @@ long int createFile101(FILE*fp_in,PSYM* psyms, FILE*fp101)
 long int createPak(FILE*in,FILE*out,int number0LastBit)
 {
 	
-	char *bufChar=(char*)calloc(SIZEPAK+2, sizeof(char));
+	char *bufChar = 0x0;
+	while (bufChar == NULL)
+		bufChar=(char*)calloc(SIZEPAK+2, sizeof(char));
 	unsigned char charTemp= GARBAGE;
 	unsigned int count = 0;
 	int len=0;
@@ -158,13 +166,8 @@ int posBegine = ftell(out);// need for check
 		count++;
 	} while (len== SIZEPAK);// check the condition equality lenght  to SIZE f one char (in current event it is 8 bit)
 	
-/*	23.02 check wrong pack
-if (len == SIZEPAK)
-		*number0LastBit = EMPTY;
-	else
-		*number0LastBit = SIZEPAK-len;
-		*/
-	// free(bufChar);
+
+	 free(bufChar);
 	 return count;
 }
 void brushString(char *string)
@@ -201,7 +204,7 @@ int checkMadeCodesUsually(PSYM*psyms)
 
 	return countGap;
 }
-int creatHederInfinalFile(FILE*fpMOL,int maxlengthArray,PSYM* psyms,int number0LastBit,ULL numberLetter)
+int creatHederInfinalFile(FILE*fpMOL, int maxlengthArray, PSYM* psyms, int number0LastBit, ULL sizeInputFile, UC*extension)
 {
 	int pos1 = ftell(fpMOL);//
 	int posEndHeader;// position of end header
@@ -210,7 +213,7 @@ int creatHederInfinalFile(FILE*fpMOL,int maxlengthArray,PSYM* psyms,int number0L
 	//PSYM* psyms //Table of occurence. Here stored records aboun symbols and frequencies. They need to be stored in binay without gaps.
 	//number0LastBit//The length tail. File size .101 not always a multiple of 8, so at the end you you may see 'tail' of several bits. We add them to full byte and keep the actual length
 	//numberLetter // The size of the sourse file.Need to control out of the box
-	//The original file extentision. If the compressor changes expansion the original fille must then be restored.
+	//The original file extentision. If the compressor changes extension the original fille must then be restored.
 	
 	fwrite(signature, sizeof(char), 3, fpMOL);
 	fwrite(&maxlengthArray, sizeof(int), 1, fpMOL);
@@ -222,7 +225,10 @@ int creatHederInfinalFile(FILE*fpMOL,int maxlengthArray,PSYM* psyms,int number0L
 	int pos = ftell(fpMOL);
 	fwrite(&number0LastBit, sizeof(int), 1, fpMOL);
 	pos1 = ftell(fpMOL);
-	fwrite(&numberLetter, sizeof(ULL), 1, fpMOL);
+	fwrite(&sizeInputFile,sizeof(ULL),1, fpMOL);
+	int lengthextension=strlen(extension);
+	fwrite(&lengthextension, sizeof(int), 1, fpMOL);
+	fwrite(extension, sizeof(UC), lengthextension, fpMOL);
 	posEndHeader = ftell(fpMOL);//
 	//fwrite(maxlengthArray, sizeof(int), 3, fpMOL);
 	return posEndHeader;
@@ -240,6 +246,8 @@ int recordPSYMtoString(int maxlengthArray, PSYM* psyms,FILE*fpMOL)
 	fwrite(StringFloat, sizeof(float), maxlengthArray, fpMOL);
 	int pos2 = ftell(fpMOL);
 
+	free(StringFloat);
+	free(stringChar);
 	return CHECK_OK;
 }
 UC*createStringChar(int maxlengthArray, PSYM* psyms)
@@ -277,4 +285,96 @@ void brushAdresses(TSYM*psymsCode[])
 		psymsCode[i]->lessNode=NULL;
 	}
 
+}
+ULL findSizeInputFile(FILE*fp)// determitation of the size of the file
+{
+	ULL sizeFile = 0;
+	fseek(fp, 0, SEEK_SET);
+	fseek(fp, 0, SEEK_END);
+	sizeFile = ftell(fp);
+	return sizeFile;
+}
+
+UC*findExtension(UC*string)
+{
+	int length = strlen(string);
+
+	for (int last = length;last > 0; last--)
+	{
+		if (string[last] == '.')
+			return string + last;
+	}
+	
+	printf("ERROR findextension: we didn't extension for -%s\n", string);
+	return ERRORPointer;//
+}
+
+UC*createNameFile(UC*string, UC*newExtension,UC*flagCopy)
+{
+	int lengthFlag = 0;
+	if (flagCopy == NULL)
+	{
+		lengthFlag = 0;
+	}
+	else
+		lengthFlag = strlen(flagCopy);
+
+	printf("the Old Name of file =%s\n",string);
+	UC oldNameFile[MAXSYMB];
+	int length = strlen(string);
+	strncpy(oldNameFile, string, length);
+	oldNameFile[length] = '\0';
+	
+	UC*newNameFile;
+	int newLength = 0;
+	int oldlength = strlen(oldNameFile);
+	int last;
+
+	for (last = oldlength;last > 0; last--)
+	{
+		if (oldNameFile[last] == '.')
+		{
+			oldNameFile[last] = '\0';
+			break;
+		}
+	}
+	if (last > EMPTY)
+	{
+
+		int lengthExtension = strlen(newExtension);
+		newLength = strlen(oldNameFile) + lengthExtension;
+		newNameFile = 0x0;
+		while(newNameFile==NULL)
+			newNameFile = (UC*)calloc(newLength + lengthFlag+2, sizeof(UC));
+			
+		strncpy(newNameFile, oldNameFile, oldlength);
+		
+		newNameFile[newLength] = '\0';
+		
+		if(flagCopy!=NULL)
+			strncat(newNameFile, flagCopy, lengthFlag);
+		
+		//add new extension
+		strncat(newNameFile, newExtension,lengthExtension);
+		newLength = strlen(newNameFile);
+		printf("the new Name of file =%s\n", newNameFile);
+		return newNameFile;
+	}
+		else
+		{
+			printf("ERROR createNameFile: we were unable to find a point that separate the name from extension,  for -%s\n", oldNameFile);
+			return ERRORPointer;//
+		}
+	}
+
+int brushPointersArray(PSYM*parr[])
+{
+	int count = 0;
+	
+	for (int i = 0;(parr[i][0]) != NULL;i++)
+	{
+		parr[i][0] = NULL;
+		count = i;
+	}
+	return count;
 }

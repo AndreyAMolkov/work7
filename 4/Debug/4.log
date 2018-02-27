@@ -1,3 +1,12 @@
-﻿  main4.c
+﻿  task4.c
+  main4.c
+c:\git\work7\4\main4.c(72): warning C4477: "printf": в строке форматирования "%u" требуется аргумент типа "unsigned int", но вариативный аргумент "1" имеет тип "ULL"
+  c:\git\work7\4\main4.c(72): note: рекомендуется использовать "%llu" в строке форматирования
+  c:\git\work7\4\main4.c(72): note: рекомендуется использовать "%I64u" в строке форматирования
+  task3.c
+c:\git\work7\3\task3.c(216): warning C4244: =: преобразование "BASE_TYPE" в "float", возможна потеря данных
+c:\git\work7\3\task3.c(212): warning C4244: инициализация: преобразование "ULL" в "float", возможна потеря данных
+  Создание кода...
+c:\git\work7\3\task3.c(154): warning C4715: findErrorCopy2psyms: значение возвращается не при всех путях выполнения
   4.vcxproj -> C:\git\work7\Debug\4.exe
   4.vcxproj -> C:\git\work7\Debug\4.pdb (Full PDB)

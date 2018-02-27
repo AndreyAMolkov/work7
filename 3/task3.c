@@ -40,7 +40,7 @@ int check2Tree(PSYM treeSym, ULL trueTotal )//need for check number of total let
 	FILE *fpcheck = fopen("checkTree.xls",WRITE);
 	if (!fpcheck)
 	{
-		printf("ERROR of opened fpcheck");
+		printf("ERROR of opened fpcheck\n");
 		return fall;
 	}
 	fprintf(fpcheck, "%s\t%s\t%s\t%s\t%s\t%s\n","Input ch", "total", "frequency", "CODE", "lessNode", "moreNode");

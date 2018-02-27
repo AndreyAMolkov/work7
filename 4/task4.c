@@ -204,18 +204,18 @@ int checkMadeCodesUsually(PSYM*psyms)
 
 	return countGap;
 }
-int creatHederInfinalFile(FILE*fpMOL, int maxlengthArray, PSYM* psyms, int number0LastBit, ULL sizeInputFile, UC*extension)
+int creatHeaderInfinalFile(FILE*fpMOL, int maxlengthArray, PSYM psyms[], int number0LastBit, ULL sizeInputFile, char extensionOld[], char signature[])
 {
 	int pos1 = ftell(fpMOL);//
 	int posEndHeader;// position of end header
-	char*signature = "MOL";//signature. A set of multiple characters that allws you to set the file belongs to a specific format
+	//signature. A set of multiple characters that allows you to set the file belongs to a specific format
 	//int maxlengthArray; the number of unique charactrs.Contains the numberof rows in the table occurences.
 	//PSYM* psyms //Table of occurence. Here stored records aboun symbols and frequencies. They need to be stored in binay without gaps.
 	//number0LastBit//The length tail. File size .101 not always a multiple of 8, so at the end you you may see 'tail' of several bits. We add them to full byte and keep the actual length
 	//numberLetter // The size of the sourse file.Need to control out of the box
 	//The original file extentision. If the compressor changes extension the original fille must then be restored.
 	
-	fwrite(signature, sizeof(char), 3, fpMOL);
+	fwrite(signature, sizeof(char), 4, fpMOL);
 	fwrite(&maxlengthArray, sizeof(int), 1, fpMOL);
 	if( CHECK_FALL==recordPSYMtoString(maxlengthArray, psyms,fpMOL))
 	{
@@ -226,9 +226,9 @@ int creatHederInfinalFile(FILE*fpMOL, int maxlengthArray, PSYM* psyms, int numbe
 	fwrite(&number0LastBit, sizeof(int), 1, fpMOL);
 	pos1 = ftell(fpMOL);
 	fwrite(&sizeInputFile,sizeof(ULL),1, fpMOL);
-	int lengthextension=strlen(extension);
+	int lengthextension=strlen(extensionOld);
 	fwrite(&lengthextension, sizeof(int), 1, fpMOL);
-	fwrite(extension, sizeof(UC), lengthextension, fpMOL);
+	fwrite(extensionOld, sizeof(char), lengthextension, fpMOL);
 	posEndHeader = ftell(fpMOL);//
 	//fwrite(maxlengthArray, sizeof(int), 3, fpMOL);
 	return posEndHeader;
@@ -309,7 +309,7 @@ UC*findExtension(UC*string)
 	return ERRORPointer;//
 }
 
-UC*createNameFile(UC*string, UC*newExtension,UC*flagCopy)
+UC*createNameFile(UC string[], char newExtension[],UC*flagCopy)
 {
 	int lengthFlag = 0;
 	if (flagCopy == NULL)
@@ -367,14 +367,3 @@ UC*createNameFile(UC*string, UC*newExtension,UC*flagCopy)
 		}
 	}
 
-int brushPointersArray(PSYM*parr[])
-{
-	int count = 0;
-	
-	for (int i = 0;(parr[i][0]) != NULL;i++)
-	{
-		parr[i][0] = NULL;
-		count = i;
-	}
-	return count;
-}

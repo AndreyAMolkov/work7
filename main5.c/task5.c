@@ -13,12 +13,12 @@
 #define WRONGNEGATIVEVALUE -100
 #define EMPTY 0
 
-PSYM* readHederInfinalFile(FILE*fpMOL, int *maxlengthArray, TSYM* psyms[], int *number0LastBit,ULL*sizeInputFile,UC**extension)
+PSYM* readHeaderInfinalFile(FILE*fpMOL, int maxlengthArray[], TSYM* psyms[],int number0LastBit[], ULL sizeInputFile[], char *extension[], char signatureEtalon[])
 {
 	int i;
 	int pos1 = ftell(fpMOL);//
 	//int posEndHeader;// position of end header
-	char*signatureEtalon = "MOL";//signature. A set of multiple characters that allws you to set the file belongs to a specific format
+	//char*signatureEtalon = "mol";//signature. A set of multiple characters that allws you to set the file belongs to a specific format
 	char signature[4] = {0};
 						   //int maxlengthArray; the number of unique charactrs.Contains the numberof rows in the table occurences.
 						   //PSYM* psyms //Table of occurence. Here stored records aboun symbols and frequencies. They need to be stored in binay without gaps.
@@ -26,7 +26,7 @@ PSYM* readHederInfinalFile(FILE*fpMOL, int *maxlengthArray, TSYM* psyms[], int *
 						   //numberLetter // The size of the sourse file.Need to control out of the box
 						   //The original file extentision. If the compressor changes expansion the original fille must then be restored.
 
-	fread(signature, sizeof(char), 3, fpMOL);
+	fread(signature, sizeof(char), 4, fpMOL);
 	i = 0;
 	while(signatureEtalon[i]!='\0')
 		if (signature[i] != signatureEtalon[i++])
@@ -50,7 +50,7 @@ PSYM* readHederInfinalFile(FILE*fpMOL, int *maxlengthArray, TSYM* psyms[], int *
 	fread(&endExtension,sizeof(int), 1, fpMOL);
 
 	*extension = (char*)calloc(endExtension+1, sizeof(char));
-	fread(*extension, sizeof(UC), endExtension, fpMOL);
+	fread(*extension, sizeof(char), endExtension, fpMOL);
 	//posEndHeader = ftell(fpMOL);//
 	return psyms;
 }
@@ -89,11 +89,12 @@ PSYM*recordPsymsChar(int maxlengthArray, TSYM* psyms[],UC*stringChar)
 	int i;
 
 	while (!psyms)
-		psyms = (PSYM*)calloc(maxlengthArray + 2, sizeof(PSYM));
+		psyms = (TSYM**)calloc(maxlengthArray + 2, sizeof(TSYM*));
+
 	for (i = 0;i < maxlengthArray;i++)
 	{
 		while(psyms[i]==NULL)
-		psyms[i] = (TSYM*)calloc(1, sizeof(TSYM));
+			psyms[i] = (TSYM*)calloc(1, sizeof(TSYM));
 
 		psyms[i]->ch = stringChar[i];
 	}
@@ -206,7 +207,7 @@ int createFp(FILE*fp101, TSYM*root, FILE*fp)
 	return CHECK_OK;
 }
 
-ULL SizeFile(FILE*fp)
+ULL sizeFile(FILE*fp)
 {
 	fseek(fp, 0, SEEK_END);
 	return ftell(fp);

@@ -1,5 +1,8 @@
 ﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (main5.c.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  task5.c
   main5.c
 c:\git\work7\main5.c\main5.c(103): warning C4020: strcat: слишком много фактических параметров
+c:\git\work7\main5.c\main5.c(124): warning C4244: =: преобразование "ULL" в "long", возможна потеря данных
+  Создание кода...
   main5.c.vcxproj -> C:\git\work7\Debug\5.exe
   main5.c.vcxproj -> C:\git\work7\Debug\5.pdb (Full PDB)

@@ -203,8 +203,12 @@ int createFp(FILE*fp101, TSYM*root, FILE*fp)
 	
 	}
 		
-
-	
 	return CHECK_OK;
+}
+
+ULL SizeFile(FILE*fp)
+{
+	fseek(fp, 0, SEEK_END);
+	return ftell(fp);
 }
 

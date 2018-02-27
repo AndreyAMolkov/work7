@@ -30,7 +30,7 @@ union CODE {
 };
 typedef union CODE TCODE;
 
-PSYM* readHederInfinalFile(FILE*fpMOL, int *maxlengthArray, TSYM* psyms[], int *number0LastBit, ULL*sizeInputFile, UC**extension);
+PSYM*readHederInfinalFile(FILE*fpMOL, int *maxlengthArray, TSYM* psyms[], int *number0LastBit, ULL*sizeInputFile, UC**extension);
 PSYM*recordStringtoPSYM(int maxlengthArray, TSYM* psyms[], FILE*fpMOL);
 PSYM*recordPsymsChar(int maxlengthArray, TSYM* psyms[], UC*stringChar);
 PSYM*recordPsymsFloat(int maxlengthArray, TSYM* psyms[], float*stringFloat);
@@ -46,3 +46,4 @@ void copyParrToChange(PSYM*psyms, PSYM*psymsCode);
 ULL findSizeInputFile(FILE*fp);
 UC*createNameFile(UC*string, UC*newExtension, UC*flagCopy);
 int brushPointersArray(PSYM*parr[]);
+ULL SizeFile(FILE*fp);

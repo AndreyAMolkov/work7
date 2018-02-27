@@ -119,10 +119,15 @@ if (CHECK_FALL == createFp(fp101, root, fpOut))
 	return 1;
 }
 else
-printf("The file has benn successfuly unpacked \n The adress for the file - %s\n", nameOutputFile);
-int result = 0;
+{
+	long int result = 0;
+	if((result=(SizeFile(fpOut)-sizeInputFile))==0)
+		printf("The file has been successfully unpacked \n The adress for the file - %s\n", nameOutputFile);
+	else
+		printf("The file has been unpacked with corruption =%li\n The adress for the file - %s\n",result,nameOutputFile);
 
 
+}
 	fclose(fpOut);
 	fclose(fp101);
 	fclose(fpMOL);
